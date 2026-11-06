@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -35,8 +35,9 @@ namespace ShareX.HelpersLib
         public event DataReceivedEventHandler OutputDataReceived;
         public event DataReceivedEventHandler ErrorDataReceived;
 
+        public bool IsProcessRunning { get; private set; }
+
         protected Process process;
-        protected bool processRunning;
 
         public virtual int Open(string path, string args = null)
         {
@@ -71,12 +72,12 @@ namespace ShareX.HelpersLib
 
                     try
                     {
-                        processRunning = true;
+                        IsProcessRunning = true;
                         process.WaitForExit();
                     }
                     finally
                     {
-                        processRunning = false;
+                        IsProcessRunning = false;
                     }
 
                     return process.ExitCode;
@@ -90,10 +91,7 @@ namespace ShareX.HelpersLib
         {
             if (e.Data != null)
             {
-                if (OutputDataReceived != null)
-                {
-                    OutputDataReceived(sender, e);
-                }
+                OutputDataReceived?.Invoke(sender, e);
             }
         }
 
@@ -101,16 +99,13 @@ namespace ShareX.HelpersLib
         {
             if (e.Data != null)
             {
-                if (ErrorDataReceived != null)
-                {
-                    ErrorDataReceived(sender, e);
-                }
+                ErrorDataReceived?.Invoke(sender, e);
             }
         }
 
         public void WriteInput(string input)
         {
-            if (processRunning && process != null && process.StartInfo != null && process.StartInfo.RedirectStandardInput)
+            if (IsProcessRunning && process != null && process.StartInfo != null && process.StartInfo.RedirectStandardInput)
             {
                 process.StandardInput.WriteLine(input);
             }
@@ -118,7 +113,7 @@ namespace ShareX.HelpersLib
 
         public virtual void Close()
         {
-            if (processRunning && process != null)
+            if (IsProcessRunning && process != null)
             {
                 process.CloseMainWindow();
             }

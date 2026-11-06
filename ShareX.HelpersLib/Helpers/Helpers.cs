@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -24,7 +24,6 @@
 #endregion License Information (GPL v3)
 
 using Microsoft.Win32;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ShareX.HelpersLib.Properties;
 using System;
@@ -52,7 +51,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows.Forms;
 using System.Xml;
-using System.Xml.Linq;
 
 namespace ShareX.HelpersLib
 {
@@ -64,10 +62,8 @@ namespace ShareX.HelpersLib
         public const string Alphanumeric = Numbers + AlphabetCapital + Alphabet;
         public const string AlphanumericInverse = Numbers + Alphabet + AlphabetCapital;
         public const string Hexadecimal = Numbers + "ABCDEF";
-
-        public static readonly string[] ImageFileExtensions = new string[] { "jpg", "jpeg", "png", "gif", "bmp", "ico", "tif", "tiff" };
-        public static readonly string[] TextFileExtensions = new string[] { "txt", "log", "nfo", "c", "cpp", "cc", "cxx", "h", "hpp", "hxx", "cs", "vb", "html", "htm", "xhtml", "xht", "xml", "css", "js", "php", "bat", "java", "lua", "py", "pl", "cfg", "ini", "dart", "go", "gohtml" };
-        public static readonly string[] VideoFileExtensions = new string[] { "mp4", "webm", "mkv", "avi", "vob", "ogv", "ogg", "mov", "qt", "wmv", "m4p", "m4v", "mpg", "mp2", "mpeg", "mpe", "mpv", "m2v", "m4v", "flv", "f4v" };
+        public const string Base58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"; // https://en.wikipedia.org/wiki/Base58
+        public const string Base56 = "23456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz"; // A variant, Base56, excludes 1 (one) and o (lowercase o) compared to Base 58.
 
         public static readonly Version OSVersion = Environment.OSVersion.Version;
 
@@ -90,134 +86,6 @@ namespace ShareX.HelpersLib
 
                 return cursorList;
             }
-        }
-
-        /// <summary>Get file name extension without dot.</summary>
-        public static string GetFilenameExtension(string filePath)
-        {
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                int pos = filePath.LastIndexOf('.');
-
-                if (pos >= 0)
-                {
-                    return filePath.Substring(pos + 1);
-                }
-            }
-
-            return null;
-        }
-
-        public static string GetFilenameSafe(string filePath)
-        {
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                int pos = filePath.LastIndexOf('\\');
-
-                if (pos < 0)
-                {
-                    pos = filePath.LastIndexOf('/');
-                }
-
-                if (pos >= 0)
-                {
-                    return filePath.Substring(pos + 1);
-                }
-            }
-
-            return filePath;
-        }
-
-        public static string ChangeFilenameExtension(string filePath, string extension)
-        {
-            if (!string.IsNullOrEmpty(filePath) && !string.IsNullOrEmpty(extension))
-            {
-                int pos = filePath.LastIndexOf('.');
-
-                if (pos >= 0)
-                {
-                    filePath = filePath.Remove(pos);
-
-                    extension = extension.Trim();
-                    pos = extension.LastIndexOf('.');
-
-                    if (pos >= 0)
-                    {
-                        extension = extension.Substring(pos + 1);
-                    }
-
-                    return filePath + "." + extension;
-                }
-            }
-
-            return filePath;
-        }
-
-        public static string RenameFile(string filePath, string newFileName)
-        {
-            try
-            {
-                if (File.Exists(filePath))
-                {
-                    string directory = Path.GetDirectoryName(filePath);
-                    string newPath = Path.Combine(directory, newFileName);
-                    File.Move(filePath, newPath);
-                    return newPath;
-                }
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show("Rename error:\r\n" + e.ToString(), "ShareX - " + Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-
-            return filePath;
-        }
-
-        public static string AppendExtension(string filePath, string extension)
-        {
-            return filePath.TrimEnd('.') + '.' + extension.TrimStart('.');
-        }
-
-        public static bool CheckExtension(string filePath, IEnumerable<string> extensions)
-        {
-            string ext = GetFilenameExtension(filePath);
-
-            if (!string.IsNullOrEmpty(ext))
-            {
-                return extensions.Any(x => ext.Equals(x, StringComparison.InvariantCultureIgnoreCase));
-            }
-
-            return false;
-        }
-
-        public static bool IsImageFile(string filePath)
-        {
-            return CheckExtension(filePath, ImageFileExtensions);
-        }
-
-        public static bool IsTextFile(string filePath)
-        {
-            return CheckExtension(filePath, TextFileExtensions);
-        }
-
-        public static bool IsVideoFile(string filePath)
-        {
-            return CheckExtension(filePath, VideoFileExtensions);
-        }
-
-        public static EDataType FindDataType(string filePath)
-        {
-            if (IsImageFile(filePath))
-            {
-                return EDataType.Image;
-            }
-
-            if (IsTextFile(filePath))
-            {
-                return EDataType.Text;
-            }
-
-            return EDataType.File;
         }
 
         public static string AddZeroes(string input, int digits = 2)
@@ -247,7 +115,7 @@ namespace ShareX.HelpersLib
 
         public static char GetRandomChar(string chars)
         {
-            return chars[MathHelpers.CryptoRandom(chars.Length - 1)];
+            return chars[RandomCrypto.Next(chars.Length - 1)];
         }
 
         public static string GetRandomString(string chars, int length)
@@ -285,44 +153,19 @@ namespace ShareX.HelpersLib
         public static string GetRandomLine(string text)
         {
             string[] lines = text.Trim().Lines();
+
             if (lines != null && lines.Length > 0)
             {
-                return lines[MathHelpers.CryptoRandom(0, lines.Length - 1)];
+                return RandomCrypto.Pick(lines);
             }
+
             return null;
         }
 
-        public static string GetRandomLineFromFile(string path)
+        public static string GetRandomLineFromFile(string filePath)
         {
-            string text = File.ReadAllText(path);
+            string text = File.ReadAllText(filePath, Encoding.UTF8);
             return GetRandomLine(text);
-        }
-
-        public static string GetValidFileName(string fileName, string separator = "")
-        {
-            char[] invalidFileNameChars = Path.GetInvalidFileNameChars();
-            if (string.IsNullOrEmpty(separator))
-            {
-                return new string(fileName.Where(c => !invalidFileNameChars.Contains(c)).ToArray());
-            }
-            else
-            {
-                invalidFileNameChars.ForEach(x => fileName = fileName.Replace(x.ToString(), separator));
-                return fileName.Trim().Replace(separator + separator, separator);
-            }
-        }
-
-        public static string GetValidFolderPath(string folderPath)
-        {
-            char[] invalidPathChars = Path.GetInvalidPathChars();
-            return new string(folderPath.Where(c => !invalidPathChars.Contains(c)).ToArray());
-        }
-
-        public static string GetValidFilePath(string filePath)
-        {
-            string folderPath = Path.GetDirectoryName(filePath);
-            string fileName = Path.GetFileName(filePath);
-            return GetValidFolderPath(folderPath) + Path.DirectorySeparatorChar + GetValidFileName(fileName);
         }
 
         public static string GetValidURL(string url, bool replaceSpace = false)
@@ -400,124 +243,39 @@ namespace ShareX.HelpersLib
         }
 
         // Example: "TopLeft" becomes "Top left"
-        public static string GetProperName(string name)
+        // Example2: "Rotate180" becomes "Rotate 180"
+        public static string GetProperName(string name, bool keepCase = false)
         {
             StringBuilder sb = new StringBuilder();
+
+            bool number = false;
 
             for (int i = 0; i < name.Length; i++)
             {
                 char c = name[i];
 
-                if (i > 0 && char.IsUpper(c))
+                if (i > 0 && (char.IsUpper(c) || (!number && char.IsNumber(c))))
                 {
                     sb.Append(' ');
-                    sb.Append(char.ToLowerInvariant(c));
+
+                    if (keepCase)
+                    {
+                        sb.Append(c);
+                    }
+                    else
+                    {
+                        sb.Append(char.ToLowerInvariant(c));
+                    }
                 }
                 else
                 {
                     sb.Append(c);
                 }
+
+                number = char.IsNumber(c);
             }
 
             return sb.ToString();
-        }
-
-        public static bool OpenFile(string filePath)
-        {
-            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
-            {
-                try
-                {
-                    using (Process process = new Process())
-                    {
-                        ProcessStartInfo psi = new ProcessStartInfo()
-                        {
-                            FileName = filePath
-                        };
-
-                        process.StartInfo = psi;
-                        process.Start();
-                    }
-
-                    DebugHelper.WriteLine("File opened: " + filePath);
-
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    DebugHelper.WriteException(e, $"OpenFile({filePath}) failed.");
-                }
-            }
-            else
-            {
-                MessageBox.Show(Resources.Helpers_OpenFile_File_not_exist_ + Environment.NewLine + filePath, "ShareX", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-
-            return false;
-        }
-
-        public static bool OpenFolder(string folderPath)
-        {
-            if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath))
-            {
-                if (!folderPath.EndsWith(@"\"))
-                {
-                    folderPath += @"\";
-                }
-
-                try
-                {
-                    using (Process process = new Process())
-                    {
-                        ProcessStartInfo psi = new ProcessStartInfo()
-                        {
-                            FileName = folderPath
-                        };
-
-                        process.StartInfo = psi;
-                        process.Start();
-                    }
-
-                    DebugHelper.WriteLine("Folder opened: " + folderPath);
-
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    DebugHelper.WriteException(e, $"OpenFolder({folderPath}) failed.");
-                }
-            }
-            else
-            {
-                MessageBox.Show(Resources.Helpers_OpenFolder_Folder_not_exist_ + Environment.NewLine + folderPath, "ShareX", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-
-            return false;
-        }
-
-        public static bool OpenFolderWithFile(string filePath)
-        {
-            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
-            {
-                try
-                {
-                    NativeMethods.OpenFolderAndSelectFile(filePath);
-
-                    DebugHelper.WriteLine("Folder opened with file: " + filePath);
-
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    DebugHelper.WriteException(e, $"OpenFolderWithFile({filePath}) failed.");
-                }
-            }
-            else
-            {
-                MessageBox.Show(Resources.Helpers_OpenFile_File_not_exist_ + Environment.NewLine + filePath, "ShareX", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -595,9 +353,9 @@ namespace ShareX.HelpersLib
             return (OSVersion.Major == 6 && OSVersion.Minor >= 2) || OSVersion.Major > 6;
         }
 
-        public static bool IsWindows10OrGreater()
+        public static bool IsWindows10OrGreater(int build = -1)
         {
-            return OSVersion.Major >= 10;
+            return OSVersion.Major >= 10 && OSVersion.Build >= build;
         }
 
         public static bool IsDefaultInstallDir()
@@ -613,34 +371,6 @@ namespace ShareX.HelpersLib
             string pattern = @"(?<First>2[0-4]\d|25[0-5]|[01]?\d\d?)\.(?<Second>2[0-4]\d|25[0-5]|[01]?\d\d?)\.(?<Third>2[0-4]\d|25[0-5]|[01]?\d\d?)\.(?<Fourth>2[0-4]\d|25[0-5]|[01]?\d\d?)";
 
             return Regex.IsMatch(ip.Trim(), pattern);
-        }
-
-        public static string GetUniqueFilePath(string filepath)
-        {
-            if (File.Exists(filepath))
-            {
-                string folder = Path.GetDirectoryName(filepath);
-                string filename = Path.GetFileNameWithoutExtension(filepath);
-                string extension = Path.GetExtension(filepath);
-                int number = 1;
-
-                Match regex = Regex.Match(filepath, @"(.+) \((\d+)\)\.\w+");
-
-                if (regex.Success)
-                {
-                    filename = regex.Groups[1].Value;
-                    number = int.Parse(regex.Groups[2].Value);
-                }
-
-                do
-                {
-                    number++;
-                    filepath = Path.Combine(folder, string.Format("{0} ({1}){2}", filename, number, extension));
-                }
-                while (File.Exists(filepath));
-            }
-
-            return filepath;
         }
 
         public static string ProperTimeSpan(TimeSpan ts)
@@ -677,128 +407,18 @@ namespace ShareX.HelpersLib
             }
         }
 
-        public static void PlaySoundAsync(string filepath)
+        public static void PlaySoundAsync(string filePath)
         {
-            if (!string.IsNullOrEmpty(filepath) && File.Exists(filepath))
+            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
             {
                 Task.Run(() =>
                 {
-                    using (SoundPlayer soundPlayer = new SoundPlayer(filepath))
+                    using (SoundPlayer soundPlayer = new SoundPlayer(filePath))
                     {
                         soundPlayer.PlaySync();
                     }
                 });
             }
-        }
-
-        public static bool BrowseFile(TextBox tb, string initialDirectory = "", bool detectSpecialFolders = false)
-        {
-            return BrowseFile("ShareX - " + Resources.Helpers_BrowseFile_Choose_file, tb, initialDirectory, detectSpecialFolders);
-        }
-
-        public static bool BrowseFile(string title, TextBox tb, string initialDirectory = "", bool detectSpecialFolders = false)
-        {
-            using (OpenFileDialog ofd = new OpenFileDialog())
-            {
-                ofd.Title = title;
-
-                try
-                {
-                    string path = tb.Text;
-
-                    if (!string.IsNullOrEmpty(path))
-                    {
-                        path = Path.GetDirectoryName(path);
-
-                        if (Directory.Exists(path))
-                        {
-                            ofd.InitialDirectory = path;
-                        }
-                    }
-                }
-                finally
-                {
-                    if (string.IsNullOrEmpty(ofd.InitialDirectory) && !string.IsNullOrEmpty(initialDirectory))
-                    {
-                        ofd.InitialDirectory = initialDirectory;
-                    }
-                }
-
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-                    tb.Text = detectSpecialFolders ? GetVariableFolderPath(ofd.FileName) : ofd.FileName;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static bool BrowseFolder(TextBox tb, string initialDirectory = "", bool detectSpecialFolders = false)
-        {
-            return BrowseFolder("ShareX - " + Resources.Helpers_BrowseFolder_Choose_folder, tb, initialDirectory, detectSpecialFolders);
-        }
-
-        public static bool BrowseFolder(string title, TextBox tb, string initialDirectory = "", bool detectSpecialFolders = false)
-        {
-            using (FolderSelectDialog fsd = new FolderSelectDialog())
-            {
-                fsd.Title = title;
-
-                string path = tb.Text;
-
-                if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
-                {
-                    fsd.InitialDirectory = path;
-                }
-                else if (!string.IsNullOrEmpty(initialDirectory))
-                {
-                    fsd.InitialDirectory = initialDirectory;
-                }
-
-                if (fsd.ShowDialog())
-                {
-                    tb.Text = detectSpecialFolders ? GetVariableFolderPath(fsd.FileName) : fsd.FileName;
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        public static string GetVariableFolderPath(string path)
-        {
-            if (!string.IsNullOrEmpty(path))
-            {
-                try
-                {
-                    GetEnums<Environment.SpecialFolder>().ForEach(x => path = path.Replace(Environment.GetFolderPath(x), $"%{x}%", StringComparison.InvariantCultureIgnoreCase));
-                }
-                catch (Exception e)
-                {
-                    DebugHelper.WriteException(e);
-                }
-            }
-
-            return path;
-        }
-
-        public static string ExpandFolderVariables(string path)
-        {
-            if (!string.IsNullOrEmpty(path))
-            {
-                try
-                {
-                    GetEnums<Environment.SpecialFolder>().ForEach(x => path = path.Replace($"%{x}%", Environment.GetFolderPath(x), StringComparison.InvariantCultureIgnoreCase));
-                    path = Environment.ExpandEnvironmentVariables(path);
-                }
-                catch (Exception e)
-                {
-                    DebugHelper.WriteException(e);
-                }
-            }
-
-            return path;
         }
 
         public static bool WaitWhile(Func<bool> check, int interval, int timeout = -1)
@@ -835,134 +455,20 @@ namespace ShareX.HelpersLib
             if (result) onSuccess();
         }
 
-        public static bool IsFileLocked(string path)
-        {
-            try
-            {
-                using (FileStream fs = new FileStream(path, FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
-                {
-                }
-            }
-            catch (IOException)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        public static long GetFileSize(string path)
-        {
-            try
-            {
-                return new FileInfo(path).Length;
-            }
-            catch
-            {
-            }
-
-            return -1;
-        }
-
-        public static void CreateDirectoryFromDirectoryPath(string directoryPath)
-        {
-            if (!string.IsNullOrEmpty(directoryPath) && !Directory.Exists(directoryPath))
-            {
-                try
-                {
-                    Directory.CreateDirectory(directoryPath);
-                }
-                catch (Exception e)
-                {
-                    DebugHelper.WriteException(e);
-                    MessageBox.Show(Resources.Helpers_CreateDirectoryIfNotExist_Create_failed_ + "\r\n\r\n" + e, "ShareX - " + Resources.Error,
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }
-
-        public static void CreateDirectoryFromFilePath(string filePath)
-        {
-            if (!string.IsNullOrEmpty(filePath))
-            {
-                string directoryPath = Path.GetDirectoryName(filePath);
-                CreateDirectoryFromDirectoryPath(directoryPath);
-            }
-        }
-
-        public static bool IsValidFilePath(string path)
-        {
-            FileInfo fi = null;
-
-            try
-            {
-                fi = new FileInfo(path);
-            }
-            catch (ArgumentException) { }
-            catch (PathTooLongException) { }
-            catch (NotSupportedException) { }
-
-            return fi != null;
-        }
-
-        public static void CopyFile(string filePath, string destinationFolder, bool overwrite = true)
-        {
-            if (!string.IsNullOrEmpty(filePath) && !string.IsNullOrEmpty(destinationFolder))
-            {
-                string fileName = Path.GetFileName(filePath);
-                string destinationFilePath = Path.Combine(destinationFolder, fileName);
-                CreateDirectoryFromDirectoryPath(destinationFolder);
-                File.Copy(filePath, destinationFilePath, overwrite);
-            }
-        }
-
-        public static string BackupFileWeekly(string filePath, string destinationFolder)
-        {
-            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
-            {
-                string fileName = Path.GetFileNameWithoutExtension(filePath);
-                DateTime dateTime = DateTime.Now;
-                string extension = Path.GetExtension(filePath);
-                string newFileName = string.Format("{0}-{1:yyyy-MM}-W{2:00}{3}", fileName, dateTime, dateTime.WeekOfYear(), extension);
-                string newFilePath = Path.Combine(destinationFolder, newFileName);
-
-                if (!File.Exists(newFilePath))
-                {
-                    CreateDirectoryFromDirectoryPath(destinationFolder);
-                    File.Copy(filePath, newFilePath, false);
-                    return newFilePath;
-                }
-            }
-
-            return null;
-        }
-
-        public static void BackupFileMonthly(string filePath, string destinationFolder)
-        {
-            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
-            {
-                string fileName = Path.GetFileNameWithoutExtension(filePath);
-                string extension = Path.GetExtension(filePath);
-                string newFileName = string.Format("{0}-{1:yyyy-MM}{2}", fileName, DateTime.Now, extension);
-                string newFilePath = Path.Combine(destinationFolder, newFileName);
-
-                if (!File.Exists(newFilePath))
-                {
-                    CreateDirectoryFromDirectoryPath(destinationFolder);
-                    File.Copy(filePath, newFilePath, false);
-                }
-            }
-        }
-
         public static string GetUniqueID()
         {
             return Guid.NewGuid().ToString("N");
         }
 
+        public static Point GetPosition(ContentAlignment placement, int offset, Size backgroundSize, Size objectSize)
+        {
+            return GetPosition(placement, new Point(offset, offset), backgroundSize, objectSize);
+        }
+
         public static Point GetPosition(ContentAlignment placement, Point offset, Size backgroundSize, Size objectSize)
         {
-            int midX = (backgroundSize.Width / 2) - (objectSize.Width / 2);
-            int midY = (backgroundSize.Height / 2) - (objectSize.Height / 2);
+            int midX = (int)Math.Round((backgroundSize.Width / 2f) - (objectSize.Width / 2f));
+            int midY = (int)Math.Round((backgroundSize.Height / 2f) - (objectSize.Height / 2f));
             int right = backgroundSize.Width - objectSize.Width;
             int bottom = backgroundSize.Height - objectSize.Height;
 
@@ -1084,24 +590,6 @@ namespace ShareX.HelpersLib
             }
         }
 
-        public static string GetAbsolutePath(string path)
-        {
-            path = ExpandFolderVariables(path);
-
-            if (!Path.IsPathRooted(path)) // Is relative path?
-            {
-                path = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, path);
-            }
-
-            return Path.GetFullPath(path);
-        }
-
-        public static string GetTempPath(string extension)
-        {
-            string path = Path.GetTempFileName();
-            return Path.ChangeExtension(path, extension);
-        }
-
         public static bool IsAdministrator()
         {
             try
@@ -1118,6 +606,24 @@ namespace ShareX.HelpersLib
             }
         }
 
+        public static bool IsMemberOfAdministratorsGroup()
+        {
+            try
+            {
+                using (WindowsIdentity identity = WindowsIdentity.GetCurrent())
+                {
+                    WindowsPrincipal principal = new WindowsPrincipal(identity);
+                    SecurityIdentifier sid = new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null);
+                    return principal.UserClaims.Any(x => x.Value.Contains(sid.Value));
+                }
+            }
+            catch
+            {
+            }
+
+            return false;
+        }
+
         public static string RepeatGenerator(int count, Func<string> generator)
         {
             string result = "";
@@ -1126,19 +632,6 @@ namespace ShareX.HelpersLib
                 result += generator();
             }
             return result;
-        }
-
-        public static DateTime UnixToDateTime(long unix)
-        {
-            long timeInTicks = unix * TimeSpan.TicksPerSecond;
-            return new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).AddTicks(timeInTicks);
-        }
-
-        public static long DateTimeToUnix(DateTime dateTime)
-        {
-            DateTime date = dateTime.ToUniversalTime();
-            long ticks = date.Ticks - new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc).Ticks;
-            return ticks / TimeSpan.TicksPerSecond;
         }
 
         public static bool IsRunning(string name)
@@ -1156,33 +649,6 @@ namespace ShareX.HelpersLib
             return true;
         }
 
-        public static void CopyAll(string sourceDirectory, string targetDirectory)
-        {
-            DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
-            DirectoryInfo diTarget = new DirectoryInfo(targetDirectory);
-
-            CopyAll(diSource, diTarget);
-        }
-
-        public static void CopyAll(DirectoryInfo source, DirectoryInfo target)
-        {
-            if (!Directory.Exists(target.FullName))
-            {
-                Directory.CreateDirectory(target.FullName);
-            }
-
-            foreach (FileInfo fi in source.GetFiles())
-            {
-                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
-            }
-
-            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
-            {
-                DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
-                CopyAll(diSourceSubDir, nextTargetSubDir);
-            }
-        }
-
         public static T ByteArrayToStructure<T>(byte[] bytes) where T : struct
         {
             GCHandle handle = GCHandle.Alloc(bytes, GCHandleType.Pinned);
@@ -1197,26 +663,24 @@ namespace ShareX.HelpersLib
             }
         }
 
-        public static T[] GetInstances<T>() where T : class
+        public static IEnumerable<T> GetInstances<T>() where T : class
         {
-            IEnumerable<T> instances = from t in Assembly.GetCallingAssembly().GetTypes()
-                                       where t.IsClass && t.IsSubclassOf(typeof(T)) && t.GetConstructor(Type.EmptyTypes) != null
-                                       select Activator.CreateInstance(t) as T;
+            Type baseType = typeof(T);
+            Assembly assembly = baseType.Assembly;
+            return assembly.GetTypes().Where(t => t.IsClass && t.IsSubclassOf(baseType) && t.GetConstructor(Type.EmptyTypes) != null).
+                Select(t => Activator.CreateInstance(t) as T);
+        }
 
-            return instances.ToArray();
+        public static IEnumerable<Type> FindSubclassesOf<T>()
+        {
+            Type baseType = typeof(T);
+            Assembly assembly = baseType.Assembly;
+            return assembly.GetTypes().Where(t => t.IsSubclassOf(baseType));
         }
 
         public static string GetOperatingSystemProductName(bool includeBit = false)
         {
-            string productName = null;
-
-            try
-            {
-                productName = RegistryHelpers.GetRegistryValue(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName", RegistryHive.LocalMachine);
-            }
-            catch
-            {
-            }
+            string productName = RegistryHelpers.GetValueString(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion", "ProductName", RegistryHive.LocalMachine);
 
             if (string.IsNullOrEmpty(productName))
             {
@@ -1252,7 +716,8 @@ namespace ShareX.HelpersLib
 
         public static string EscapeCLIText(string text)
         {
-            return string.Format("\"{0}\"", text.Replace("\\", "\\\\").Replace("\"", "\\\""));
+            string escapedText = text.Replace("\\", "\\\\").Replace("\"", "\\\"");
+            return $"\"{escapedText}\"";
         }
 
         public static string BytesToHex(byte[] bytes)
@@ -1311,11 +776,6 @@ namespace ShareX.HelpersLib
             return ComputeHMACSHA256(Encoding.UTF8.GetBytes(data), key);
         }
 
-        public static void CreateEmptyFile(string path)
-        {
-            File.Create(path).Dispose();
-        }
-
         public static string SafeStringFormat(string format, params object[] args)
         {
             return SafeStringFormat(null, format, args);
@@ -1348,6 +808,36 @@ namespace ShareX.HelpersLib
                 result = (char)('A' + (num % 26)) + result;
                 num /= 26;
             }
+            return result;
+        }
+
+        private static string GetNextRomanNumeralStep(ref int num, int step, string numeral)
+        {
+            string result = "";
+            if (num >= step)
+            {
+                result = numeral.Repeat(num / step);
+                num %= step;
+            }
+            return result;
+        }
+
+        public static string NumberToRomanNumeral(int num)
+        {
+            string result = "";
+            result += GetNextRomanNumeralStep(ref num, 1000, "M");
+            result += GetNextRomanNumeralStep(ref num, 900, "CM");
+            result += GetNextRomanNumeralStep(ref num, 500, "D");
+            result += GetNextRomanNumeralStep(ref num, 400, "CD");
+            result += GetNextRomanNumeralStep(ref num, 100, "C");
+            result += GetNextRomanNumeralStep(ref num, 90, "XC");
+            result += GetNextRomanNumeralStep(ref num, 50, "L");
+            result += GetNextRomanNumeralStep(ref num, 40, "XL");
+            result += GetNextRomanNumeralStep(ref num, 10, "X");
+            result += GetNextRomanNumeralStep(ref num, 9, "IX");
+            result += GetNextRomanNumeralStep(ref num, 5, "V");
+            result += GetNextRomanNumeralStep(ref num, 4, "IV");
+            result += GetNextRomanNumeralStep(ref num, 1, "I");
             return result;
         }
 
@@ -1416,6 +906,101 @@ namespace ShareX.HelpersLib
                 // Extract the text from the StreamReader.
                 return sReader.ReadToEnd();
             }
+        }
+
+        public static Icon GetProgressIcon(int percentage)
+        {
+            return GetProgressIcon(percentage, Color.FromArgb(16, 116, 193));
+        }
+
+        public static Icon GetProgressIcon(int percentage, Color color)
+        {
+            percentage = percentage.Clamp(0, 99);
+
+            Size size = SystemInformation.SmallIconSize;
+            using (Bitmap bmp = new Bitmap(size.Width, size.Height))
+            using (Graphics g = Graphics.FromImage(bmp))
+            {
+                int y = (int)(size.Height * (percentage / 100f));
+
+                if (y > 0)
+                {
+                    using (Brush brush = new SolidBrush(color))
+                    {
+                        g.FillRectangle(brush, 0, size.Height - 1 - y, size.Width, y);
+                    }
+                }
+
+                using (Font font = new Font("Arial", 10))
+                using (StringFormat sf = new StringFormat { Alignment = StringAlignment.Center, LineAlignment = StringAlignment.Center })
+                {
+                    g.DrawString(percentage.ToString(), font, Brushes.Black, size.Width / 2f, size.Height / 2f, sf);
+                    g.DrawString(percentage.ToString(), font, Brushes.White, size.Width / 2f, (size.Height / 2f) - 1, sf);
+                }
+
+                return Icon.FromHandle(bmp.GetHicon());
+            }
+        }
+
+        public static string GetChecksum(string filePath)
+        {
+            using (SHA256Managed hashAlgorithm = new SHA256Managed())
+            {
+                return GetChecksum(filePath, hashAlgorithm);
+            }
+        }
+
+        public static string GetChecksum(string filePath, HashAlgorithm hashAlgorithm)
+        {
+            using (FileStream fs = File.OpenRead(filePath))
+            {
+                byte[] hash = hashAlgorithm.ComputeHash(fs);
+                return BitConverter.ToString(hash).Replace("-", "");
+            }
+        }
+
+        public static string CreateChecksumFile(string filePath)
+        {
+            if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+            {
+                string outputFilePath = filePath + ".sha256";
+                string checksum = GetChecksum(filePath);
+                string fileName = Path.GetFileName(filePath);
+                string content = $"{checksum}  {fileName}";
+
+                File.WriteAllText(outputFilePath, content);
+
+                return outputFilePath;
+            }
+
+            return null;
+        }
+
+        public static Task ForEachAsync<T>(IEnumerable<T> inputEnumerable, Func<T, Task> asyncProcessor, int maxDegreeOfParallelism)
+        {
+            SemaphoreSlim throttler = new SemaphoreSlim(maxDegreeOfParallelism, maxDegreeOfParallelism);
+
+            IEnumerable<Task> tasks = inputEnumerable.Select(async input =>
+            {
+                await throttler.WaitAsync();
+
+                try
+                {
+                    await asyncProcessor(input);
+                }
+                finally
+                {
+                    throttler.Release();
+                }
+            });
+
+            return Task.WhenAll(tasks);
+        }
+
+        public static void LockCursorToWindow(Form form)
+        {
+            form.Activated += (sender, e) => Cursor.Clip = form.Bounds;
+            form.Deactivate += (sender, e) => Cursor.Clip = Rectangle.Empty;
         }
     }
 }

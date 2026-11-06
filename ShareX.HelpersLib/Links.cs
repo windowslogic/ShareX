@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -27,18 +27,23 @@ namespace ShareX.HelpersLib
 {
     public static class Links
     {
-        public const string URL_WEBSITE = "";
-        public const string URL_PROJECT = "https://github.com/windowslogic/ShareX";
-        public const string URL_ISSUES = URL_PROJECT + "/issues?q=is%3Aissue";
-        public const string URL_CALLBACK = URL_WEBSITE + "";
-        public const string URL_CHANGELOG = URL_WEBSITE + "";
-        public const string URL_DONATE = URL_WEBSITE + "";
-        public const string URL_BERK = "https://github.com/Jaex";
-        public const string URL_MIKE = "https://github.com/McoreD";
-        public const string URL_STEAM = "http://store.steampowered.com/app/400040/";
-        public const string URL_DISCORD = "https://discord.gg/ShareX";
-        private const string URL_DOCS = URL_WEBSITE + "/docs";
-        public const string URL_CUSTOM_UPLOADER = URL_DOCS + "/custom-uploader";
-        public const string URL_CUSTOM_UPLOADERS = "https://github.com/ShareX/CustomUploaders";
+        public const string Website = "";
+        public const string GitHub = "https://github.com/windowslogic/ShareX";
+        public const string GitHubIssues = GitHub + "/issues?q=is%3Aissue";
+        public const string Callback = Website + "";
+        public const string Changelog = Website + "";
+        public const string Donate = Website + "";
+        public const string PrivacyPolicy = Website + "";
+        public const string ImageEffects = Website + "";
+        public const string Actions = Website + "";
+        public const string Jaex = "https://github.com/Jaex";
+        public const string McoreD = "https://github.com/McoreD";
+        public const string Steam = "http://store.steampowered.com/app/400040/";
+        public const string Discord = "";
+        public const string Twitter = "";
+        private const string Docs = Website + "";
+        public const string DocsCustomUploader = Docs + "";
+        public const string DocsRegionCapture = Docs + "";
+        public const string DocsOCR = Docs + "";
     }
 }

@@ -29,35 +29,28 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CustomUploaderSettingsForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CustomUploaderSettingsForm));
-            this.tscResponseText = new System.Windows.Forms.ToolStripContainer();
-            this.tsResponseText = new System.Windows.Forms.ToolStrip();
-            this.tsbResponseTextJSONFormat = new System.Windows.Forms.ToolStripButton();
-            this.tsbResponseTextXMLFormat = new System.Windows.Forms.ToolStripButton();
-            this.tsbResponseTextCopy = new System.Windows.Forms.ToolStripButton();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
             this.cbImageUploader = new System.Windows.Forms.ComboBox();
             this.btnTextUploaderTest = new System.Windows.Forms.Button();
             this.lblURLShortener = new System.Windows.Forms.Label();
             this.cbTextUploader = new System.Windows.Forms.ComboBox();
             this.btnURLShortenerTest = new System.Windows.Forms.Button();
             this.lblTextUploader = new System.Windows.Forms.Label();
-            this.gbCustomUploaders = new System.Windows.Forms.GroupBox();
             this.mbHelp = new ShareX.HelpersLib.MenuButton();
             this.cmsHelp = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiCustomUploaderGuide = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiCustomUploaders = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiClearUploaders = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiExportAll = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiUpdateFolder = new System.Windows.Forms.ToolStripMenuItem();
             this.btnNew = new System.Windows.Forms.Button();
             this.btnDuplicate = new System.Windows.Forms.Button();
-            this.btnClearUploaders = new System.Windows.Forms.Button();
             this.eiCustomUploaders = new ShareX.HelpersLib.ExportImportControl();
             this.lbCustomUploaderList = new System.Windows.Forms.ListBox();
             this.btnRemove = new System.Windows.Forms.Button();
@@ -67,8 +60,6 @@
             this.lblFileUploader = new System.Windows.Forms.Label();
             this.btnFileUploaderTest = new System.Windows.Forms.Button();
             this.lblImageUploader = new System.Windows.Forms.Label();
-            this.tcCustomUploader = new System.Windows.Forms.TabControl();
-            this.tpRequest = new System.Windows.Forms.TabPage();
             this.dgvHeaders = new System.Windows.Forms.DataGridView();
             this.cHeadersName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cHeadersValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -95,8 +86,9 @@
             this.btnDataMinify = new System.Windows.Forms.Button();
             this.pData = new System.Windows.Forms.Panel();
             this.rtbData = new System.Windows.Forms.RichTextBox();
-            this.tpResponse = new System.Windows.Forms.TabPage();
-            this.lblParseResponse = new System.Windows.Forms.Label();
+            this.pResultErrorMessage = new System.Windows.Forms.Panel();
+            this.rtbResultErrorMessage = new System.Windows.Forms.RichTextBox();
+            this.lblResultErrorMessage = new System.Windows.Forms.Label();
             this.pResultDeletionURL = new System.Windows.Forms.Panel();
             this.rtbResultDeletionURL = new System.Windows.Forms.RichTextBox();
             this.lblResultDeletionURL = new System.Windows.Forms.Label();
@@ -106,30 +98,6 @@
             this.rtbResultURL = new System.Windows.Forms.RichTextBox();
             this.lblResultThumbnailURL = new System.Windows.Forms.Label();
             this.lblResultURL = new System.Windows.Forms.Label();
-            this.tcResponseParse = new System.Windows.Forms.TabControl();
-            this.tpJsonParse = new System.Windows.Forms.TabPage();
-            this.btnJsonAddSyntax = new System.Windows.Forms.Button();
-            this.btnJsonPathHelp = new System.Windows.Forms.Button();
-            this.lblJsonPathExample = new System.Windows.Forms.Label();
-            this.lblJsonPath = new System.Windows.Forms.Label();
-            this.txtJsonPath = new System.Windows.Forms.TextBox();
-            this.tpXmlParse = new System.Windows.Forms.TabPage();
-            this.btnXmlAddSyntax = new System.Windows.Forms.Button();
-            this.btnXPathHelp = new System.Windows.Forms.Button();
-            this.lblXPathExample = new System.Windows.Forms.Label();
-            this.lblXPath = new System.Windows.Forms.Label();
-            this.txtXPath = new System.Windows.Forms.TextBox();
-            this.tpRegexParse = new System.Windows.Forms.TabPage();
-            this.lblRegex = new System.Windows.Forms.Label();
-            this.dgvRegex = new System.Windows.Forms.DataGridView();
-            this.cRegex = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.btnRegexAddSyntax = new System.Windows.Forms.Button();
-            this.tpTest = new System.Windows.Forms.TabPage();
-            this.tcTest = new System.Windows.Forms.TabControl();
-            this.tpResult = new System.Windows.Forms.TabPage();
-            this.pResult = new System.Windows.Forms.Panel();
-            this.rtbResult = new System.Windows.Forms.RichTextBox();
-            this.tpResponseText = new System.Windows.Forms.TabPage();
             this.lblDestinationType = new System.Windows.Forms.Label();
             this.lblName = new System.Windows.Forms.Label();
             this.mbDestinationType = new ShareX.HelpersLib.MenuButton();
@@ -139,16 +107,10 @@
             this.cbURLSharingService = new System.Windows.Forms.ComboBox();
             this.btnURLSharingServiceTest = new System.Windows.Forms.Button();
             this.ttHelpTip = new System.Windows.Forms.ToolTip(this.components);
-            this.pResponseText = new System.Windows.Forms.Panel();
-            this.rtbResponseText = new System.Windows.Forms.RichTextBox();
-            this.tscResponseText.ContentPanel.SuspendLayout();
-            this.tscResponseText.TopToolStripPanel.SuspendLayout();
-            this.tscResponseText.SuspendLayout();
-            this.tsResponseText.SuspendLayout();
-            this.gbCustomUploaders.SuspendLayout();
+            this.lblUploaders = new System.Windows.Forms.Label();
+            this.pMain = new System.Windows.Forms.Panel();
+            this.btnTestURLSyntax = new System.Windows.Forms.Button();
             this.cmsHelp.SuspendLayout();
-            this.tcCustomUploader.SuspendLayout();
-            this.tpRequest.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHeaders)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParameters)).BeginInit();
             this.pRequestURL.SuspendLayout();
@@ -156,71 +118,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvArguments)).BeginInit();
             this.pBodyData.SuspendLayout();
             this.pData.SuspendLayout();
-            this.tpResponse.SuspendLayout();
+            this.pResultErrorMessage.SuspendLayout();
             this.pResultDeletionURL.SuspendLayout();
             this.pResultThumbnailURL.SuspendLayout();
             this.pResultURL.SuspendLayout();
-            this.tcResponseParse.SuspendLayout();
-            this.tpJsonParse.SuspendLayout();
-            this.tpXmlParse.SuspendLayout();
-            this.tpRegexParse.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvRegex)).BeginInit();
-            this.tpTest.SuspendLayout();
-            this.tcTest.SuspendLayout();
-            this.tpResult.SuspendLayout();
-            this.pResult.SuspendLayout();
-            this.tpResponseText.SuspendLayout();
-            this.pResponseText.SuspendLayout();
+            this.pMain.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // tscResponseText
-            // 
-            // 
-            // tscResponseText.ContentPanel
-            // 
-            this.tscResponseText.ContentPanel.Controls.Add(this.pResponseText);
-            resources.ApplyResources(this.tscResponseText.ContentPanel, "tscResponseText.ContentPanel");
-            resources.ApplyResources(this.tscResponseText, "tscResponseText");
-            this.tscResponseText.Name = "tscResponseText";
-            // 
-            // tscResponseText.TopToolStripPanel
-            // 
-            this.tscResponseText.TopToolStripPanel.Controls.Add(this.tsResponseText);
-            this.tscResponseText.TopToolStripPanel.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-            // 
-            // tsResponseText
-            // 
-            resources.ApplyResources(this.tsResponseText, "tsResponseText");
-            this.tsResponseText.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.tsResponseText.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsbResponseTextJSONFormat,
-            this.tsbResponseTextXMLFormat,
-            this.tsbResponseTextCopy});
-            this.tsResponseText.Name = "tsResponseText";
-            this.tsResponseText.ShowItemToolTips = false;
-            // 
-            // tsbResponseTextJSONFormat
-            // 
-            this.tsbResponseTextJSONFormat.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            resources.ApplyResources(this.tsbResponseTextJSONFormat, "tsbResponseTextJSONFormat");
-            this.tsbResponseTextJSONFormat.Name = "tsbResponseTextJSONFormat";
-            this.tsbResponseTextJSONFormat.Click += new System.EventHandler(this.tsbCustomUploaderJSONFormat_Click);
-            // 
-            // tsbResponseTextXMLFormat
-            // 
-            this.tsbResponseTextXMLFormat.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            resources.ApplyResources(this.tsbResponseTextXMLFormat, "tsbResponseTextXMLFormat");
-            this.tsbResponseTextXMLFormat.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
-            this.tsbResponseTextXMLFormat.Name = "tsbResponseTextXMLFormat";
-            this.tsbResponseTextXMLFormat.Click += new System.EventHandler(this.tsbCustomUploaderXMLFormat_Click);
-            // 
-            // tsbResponseTextCopy
-            // 
-            this.tsbResponseTextCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-            resources.ApplyResources(this.tsbResponseTextCopy, "tsbResponseTextCopy");
-            this.tsbResponseTextCopy.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
-            this.tsbResponseTextCopy.Name = "tsbResponseTextCopy";
-            this.tsbResponseTextCopy.Click += new System.EventHandler(this.tsbCustomUploaderCopyResponseText_Click);
             // 
             // cbImageUploader
             // 
@@ -262,19 +165,6 @@
             resources.ApplyResources(this.lblTextUploader, "lblTextUploader");
             this.lblTextUploader.Name = "lblTextUploader";
             // 
-            // gbCustomUploaders
-            // 
-            this.gbCustomUploaders.Controls.Add(this.mbHelp);
-            this.gbCustomUploaders.Controls.Add(this.btnNew);
-            this.gbCustomUploaders.Controls.Add(this.btnDuplicate);
-            this.gbCustomUploaders.Controls.Add(this.btnClearUploaders);
-            this.gbCustomUploaders.Controls.Add(this.eiCustomUploaders);
-            this.gbCustomUploaders.Controls.Add(this.lbCustomUploaderList);
-            this.gbCustomUploaders.Controls.Add(this.btnRemove);
-            resources.ApplyResources(this.gbCustomUploaders, "gbCustomUploaders");
-            this.gbCustomUploaders.Name = "gbCustomUploaders";
-            this.gbCustomUploaders.TabStop = false;
-            // 
             // mbHelp
             // 
             resources.ApplyResources(this.mbHelp, "mbHelp");
@@ -286,8 +176,9 @@
             // 
             this.cmsHelp.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiCustomUploaderGuide,
-            this.tsmiCustomUploaders,
-            this.tsmiExportAll});
+            this.tsmiClearUploaders,
+            this.tsmiExportAll,
+            this.tsmiUpdateFolder});
             this.cmsHelp.Name = "cmsCustomUploaderHelp";
             this.cmsHelp.ShowImageMargin = false;
             resources.ApplyResources(this.cmsHelp, "cmsHelp");
@@ -298,17 +189,23 @@
             resources.ApplyResources(this.tsmiCustomUploaderGuide, "tsmiCustomUploaderGuide");
             this.tsmiCustomUploaderGuide.Click += new System.EventHandler(this.tsmiCustomUploaderGuide_Click);
             // 
-            // tsmiCustomUploaders
+            // tsmiClearUploaders
             // 
-            this.tsmiCustomUploaders.Name = "tsmiCustomUploaders";
-            resources.ApplyResources(this.tsmiCustomUploaders, "tsmiCustomUploaders");
-            this.tsmiCustomUploaders.Click += new System.EventHandler(this.tsmiCustomUploaderExamples_Click);
+            this.tsmiClearUploaders.Name = "tsmiClearUploaders";
+            resources.ApplyResources(this.tsmiClearUploaders, "tsmiClearUploaders");
+            this.tsmiClearUploaders.Click += new System.EventHandler(this.tsmiClearUploaders_Click);
             // 
             // tsmiExportAll
             // 
             this.tsmiExportAll.Name = "tsmiExportAll";
             resources.ApplyResources(this.tsmiExportAll, "tsmiExportAll");
             this.tsmiExportAll.Click += new System.EventHandler(this.tsmiCustomUploaderExportAll_Click);
+            // 
+            // tsmiUpdateFolder
+            // 
+            this.tsmiUpdateFolder.Name = "tsmiUpdateFolder";
+            resources.ApplyResources(this.tsmiUpdateFolder, "tsmiUpdateFolder");
+            this.tsmiUpdateFolder.Click += new System.EventHandler(this.tsmiUpdateFolder_Click);
             // 
             // btnNew
             // 
@@ -324,13 +221,6 @@
             this.btnDuplicate.UseVisualStyleBackColor = true;
             this.btnDuplicate.Click += new System.EventHandler(this.btnCustomUploaderDuplicate_Click);
             // 
-            // btnClearUploaders
-            // 
-            resources.ApplyResources(this.btnClearUploaders, "btnClearUploaders");
-            this.btnClearUploaders.Name = "btnClearUploaders";
-            this.btnClearUploaders.UseVisualStyleBackColor = true;
-            this.btnClearUploaders.Click += new System.EventHandler(this.btnCustomUploaderClearUploaders_Click);
-            // 
             // eiCustomUploaders
             // 
             this.eiCustomUploaders.CustomFilter = "ShareX custom uploader (*.sxcu)|*.sxcu";
@@ -340,12 +230,14 @@
             resources.ApplyResources(this.eiCustomUploaders, "eiCustomUploaders");
             this.eiCustomUploaders.Name = "eiCustomUploaders";
             this.eiCustomUploaders.ObjectType = null;
+            this.eiCustomUploaders.SerializationBinder = null;
             this.eiCustomUploaders.ExportRequested += new ShareX.HelpersLib.ExportImportControl.ExportEventHandler(this.eiCustomUploaders_ExportRequested);
             this.eiCustomUploaders.ImportRequested += new ShareX.HelpersLib.ExportImportControl.ImportEventHandler(this.eiCustomUploaders_ImportRequested);
             this.eiCustomUploaders.ImportCompleted += new System.Action(this.eiCustomUploaders_ImportCompleted);
             // 
             // lbCustomUploaderList
             // 
+            this.lbCustomUploaderList.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.lbCustomUploaderList.FormattingEnabled = true;
             resources.ApplyResources(this.lbCustomUploaderList, "lbCustomUploaderList");
             this.lbCustomUploaderList.Name = "lbCustomUploaderList";
@@ -398,33 +290,6 @@
             resources.ApplyResources(this.lblImageUploader, "lblImageUploader");
             this.lblImageUploader.Name = "lblImageUploader";
             // 
-            // tcCustomUploader
-            // 
-            resources.ApplyResources(this.tcCustomUploader, "tcCustomUploader");
-            this.tcCustomUploader.Controls.Add(this.tpRequest);
-            this.tcCustomUploader.Controls.Add(this.tpResponse);
-            this.tcCustomUploader.Controls.Add(this.tpTest);
-            this.tcCustomUploader.Name = "tcCustomUploader";
-            this.tcCustomUploader.SelectedIndex = 0;
-            // 
-            // tpRequest
-            // 
-            this.tpRequest.Controls.Add(this.dgvHeaders);
-            this.tpRequest.Controls.Add(this.dgvParameters);
-            this.tpRequest.Controls.Add(this.lblHeaders);
-            this.tpRequest.Controls.Add(this.lblParameters);
-            this.tpRequest.Controls.Add(this.pRequestURL);
-            this.tpRequest.Controls.Add(this.cbRequestMethod);
-            this.tpRequest.Controls.Add(this.lblRequestURL);
-            this.tpRequest.Controls.Add(this.cbBody);
-            this.tpRequest.Controls.Add(this.lblRequestMethod);
-            this.tpRequest.Controls.Add(this.lblBody);
-            this.tpRequest.Controls.Add(this.pBodyArguments);
-            this.tpRequest.Controls.Add(this.pBodyData);
-            resources.ApplyResources(this.tpRequest, "tpRequest");
-            this.tpRequest.Name = "tpRequest";
-            this.tpRequest.UseVisualStyleBackColor = true;
-            // 
             // dgvHeaders
             // 
             this.dgvHeaders.AllowUserToResizeRows = false;
@@ -433,7 +298,7 @@
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.Padding = new System.Windows.Forms.Padding(0, 2, 0, 2);
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -482,7 +347,7 @@
             dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle3.Padding = new System.Windows.Forms.Padding(0, 2, 0, 2);
             dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -591,12 +456,13 @@
             // dgvArguments
             // 
             this.dgvArguments.AllowUserToResizeRows = false;
+            this.dgvArguments.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dgvArguments.BackgroundColor = System.Drawing.SystemColors.Window;
             this.dgvArguments.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
             dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
             dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle5.Padding = new System.Windows.Forms.Padding(0, 2, 0, 2);
             dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
             dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
@@ -606,15 +472,15 @@
             this.dgvArguments.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.cArgumentsName,
             this.cArgumentsValue});
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.Padding = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvArguments.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle7.Padding = new System.Windows.Forms.Padding(1, 0, 0, 0);
+            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dgvArguments.DefaultCellStyle = dataGridViewCellStyle7;
             this.dgvArguments.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
             this.dgvArguments.GridColor = System.Drawing.SystemColors.ControlLight;
             resources.ApplyResources(this.dgvArguments, "dgvArguments");
@@ -633,6 +499,8 @@
             // cArgumentsValue
             // 
             this.cArgumentsValue.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.cArgumentsValue.DefaultCellStyle = dataGridViewCellStyle6;
             resources.ApplyResources(this.cArgumentsValue, "cArgumentsValue");
             this.cArgumentsValue.Name = "cArgumentsValue";
             this.cArgumentsValue.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
@@ -685,24 +553,25 @@
             this.rtbData.Name = "rtbData";
             this.rtbData.TextChanged += new System.EventHandler(this.rtbCustomUploaderData_TextChanged);
             // 
-            // tpResponse
+            // pResultErrorMessage
             // 
-            this.tpResponse.Controls.Add(this.lblParseResponse);
-            this.tpResponse.Controls.Add(this.pResultDeletionURL);
-            this.tpResponse.Controls.Add(this.lblResultDeletionURL);
-            this.tpResponse.Controls.Add(this.pResultThumbnailURL);
-            this.tpResponse.Controls.Add(this.pResultURL);
-            this.tpResponse.Controls.Add(this.lblResultThumbnailURL);
-            this.tpResponse.Controls.Add(this.lblResultURL);
-            this.tpResponse.Controls.Add(this.tcResponseParse);
-            resources.ApplyResources(this.tpResponse, "tpResponse");
-            this.tpResponse.Name = "tpResponse";
-            this.tpResponse.UseVisualStyleBackColor = true;
+            this.pResultErrorMessage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pResultErrorMessage.Controls.Add(this.rtbResultErrorMessage);
+            resources.ApplyResources(this.pResultErrorMessage, "pResultErrorMessage");
+            this.pResultErrorMessage.Name = "pResultErrorMessage";
             // 
-            // lblParseResponse
+            // rtbResultErrorMessage
             // 
-            resources.ApplyResources(this.lblParseResponse, "lblParseResponse");
-            this.lblParseResponse.Name = "lblParseResponse";
+            this.rtbResultErrorMessage.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.rtbResultErrorMessage.DetectUrls = false;
+            resources.ApplyResources(this.rtbResultErrorMessage, "rtbResultErrorMessage");
+            this.rtbResultErrorMessage.Name = "rtbResultErrorMessage";
+            this.rtbResultErrorMessage.TextChanged += new System.EventHandler(this.rtbResultErrorMessage_TextChanged);
+            // 
+            // lblResultErrorMessage
+            // 
+            resources.ApplyResources(this.lblResultErrorMessage, "lblResultErrorMessage");
+            this.lblResultErrorMessage.Name = "lblResultErrorMessage";
             // 
             // pResultDeletionURL
             // 
@@ -718,7 +587,6 @@
             resources.ApplyResources(this.rtbResultDeletionURL, "rtbResultDeletionURL");
             this.rtbResultDeletionURL.Name = "rtbResultDeletionURL";
             this.rtbResultDeletionURL.TextChanged += new System.EventHandler(this.rtbCustomUploaderDeletionURL_TextChanged);
-            this.rtbResultDeletionURL.Enter += new System.EventHandler(this.rtbCustomUploaderDeletionURL_Enter);
             // 
             // lblResultDeletionURL
             // 
@@ -739,7 +607,6 @@
             resources.ApplyResources(this.rtbResultThumbnailURL, "rtbResultThumbnailURL");
             this.rtbResultThumbnailURL.Name = "rtbResultThumbnailURL";
             this.rtbResultThumbnailURL.TextChanged += new System.EventHandler(this.rtbCustomUploaderThumbnailURL_TextChanged);
-            this.rtbResultThumbnailURL.Enter += new System.EventHandler(this.rtbCustomUploaderThumbnailURL_Enter);
             // 
             // pResultURL
             // 
@@ -755,7 +622,6 @@
             resources.ApplyResources(this.rtbResultURL, "rtbResultURL");
             this.rtbResultURL.Name = "rtbResultURL";
             this.rtbResultURL.TextChanged += new System.EventHandler(this.rtbCustomUploaderURL_TextChanged);
-            this.rtbResultURL.Enter += new System.EventHandler(this.rtbCustomUploaderURL_Enter);
             // 
             // lblResultThumbnailURL
             // 
@@ -766,204 +632,6 @@
             // 
             resources.ApplyResources(this.lblResultURL, "lblResultURL");
             this.lblResultURL.Name = "lblResultURL";
-            // 
-            // tcResponseParse
-            // 
-            this.tcResponseParse.Controls.Add(this.tpJsonParse);
-            this.tcResponseParse.Controls.Add(this.tpXmlParse);
-            this.tcResponseParse.Controls.Add(this.tpRegexParse);
-            resources.ApplyResources(this.tcResponseParse, "tcResponseParse");
-            this.tcResponseParse.Name = "tcResponseParse";
-            this.tcResponseParse.SelectedIndex = 0;
-            // 
-            // tpJsonParse
-            // 
-            this.tpJsonParse.Controls.Add(this.btnJsonAddSyntax);
-            this.tpJsonParse.Controls.Add(this.btnJsonPathHelp);
-            this.tpJsonParse.Controls.Add(this.lblJsonPathExample);
-            this.tpJsonParse.Controls.Add(this.lblJsonPath);
-            this.tpJsonParse.Controls.Add(this.txtJsonPath);
-            resources.ApplyResources(this.tpJsonParse, "tpJsonParse");
-            this.tpJsonParse.Name = "tpJsonParse";
-            this.tpJsonParse.UseVisualStyleBackColor = true;
-            // 
-            // btnJsonAddSyntax
-            // 
-            resources.ApplyResources(this.btnJsonAddSyntax, "btnJsonAddSyntax");
-            this.btnJsonAddSyntax.Name = "btnJsonAddSyntax";
-            this.btnJsonAddSyntax.UseVisualStyleBackColor = true;
-            this.btnJsonAddSyntax.Click += new System.EventHandler(this.btnCustomUploaderJsonAddSyntax_Click);
-            // 
-            // btnJsonPathHelp
-            // 
-            resources.ApplyResources(this.btnJsonPathHelp, "btnJsonPathHelp");
-            this.btnJsonPathHelp.Name = "btnJsonPathHelp";
-            this.btnJsonPathHelp.UseVisualStyleBackColor = true;
-            this.btnJsonPathHelp.Click += new System.EventHandler(this.btnCustomUploadJsonPathHelp_Click);
-            // 
-            // lblJsonPathExample
-            // 
-            resources.ApplyResources(this.lblJsonPathExample, "lblJsonPathExample");
-            this.lblJsonPathExample.Name = "lblJsonPathExample";
-            // 
-            // lblJsonPath
-            // 
-            resources.ApplyResources(this.lblJsonPath, "lblJsonPath");
-            this.lblJsonPath.Name = "lblJsonPath";
-            // 
-            // txtJsonPath
-            // 
-            resources.ApplyResources(this.txtJsonPath, "txtJsonPath");
-            this.txtJsonPath.Name = "txtJsonPath";
-            this.txtJsonPath.TextChanged += new System.EventHandler(this.txtCustomUploaderJsonPath_TextChanged);
-            // 
-            // tpXmlParse
-            // 
-            this.tpXmlParse.Controls.Add(this.btnXmlAddSyntax);
-            this.tpXmlParse.Controls.Add(this.btnXPathHelp);
-            this.tpXmlParse.Controls.Add(this.lblXPathExample);
-            this.tpXmlParse.Controls.Add(this.lblXPath);
-            this.tpXmlParse.Controls.Add(this.txtXPath);
-            resources.ApplyResources(this.tpXmlParse, "tpXmlParse");
-            this.tpXmlParse.Name = "tpXmlParse";
-            this.tpXmlParse.UseVisualStyleBackColor = true;
-            // 
-            // btnXmlAddSyntax
-            // 
-            resources.ApplyResources(this.btnXmlAddSyntax, "btnXmlAddSyntax");
-            this.btnXmlAddSyntax.Name = "btnXmlAddSyntax";
-            this.btnXmlAddSyntax.UseVisualStyleBackColor = true;
-            this.btnXmlAddSyntax.Click += new System.EventHandler(this.btnCustomUploaderXmlSyntaxAdd_Click);
-            // 
-            // btnXPathHelp
-            // 
-            resources.ApplyResources(this.btnXPathHelp, "btnXPathHelp");
-            this.btnXPathHelp.Name = "btnXPathHelp";
-            this.btnXPathHelp.UseVisualStyleBackColor = true;
-            this.btnXPathHelp.Click += new System.EventHandler(this.btnCustomUploaderXPathHelp_Click);
-            // 
-            // lblXPathExample
-            // 
-            resources.ApplyResources(this.lblXPathExample, "lblXPathExample");
-            this.lblXPathExample.Name = "lblXPathExample";
-            // 
-            // lblXPath
-            // 
-            resources.ApplyResources(this.lblXPath, "lblXPath");
-            this.lblXPath.Name = "lblXPath";
-            // 
-            // txtXPath
-            // 
-            resources.ApplyResources(this.txtXPath, "txtXPath");
-            this.txtXPath.Name = "txtXPath";
-            this.txtXPath.TextChanged += new System.EventHandler(this.txtCustomUploaderXPath_TextChanged);
-            // 
-            // tpRegexParse
-            // 
-            this.tpRegexParse.Controls.Add(this.lblRegex);
-            this.tpRegexParse.Controls.Add(this.dgvRegex);
-            this.tpRegexParse.Controls.Add(this.btnRegexAddSyntax);
-            resources.ApplyResources(this.tpRegexParse, "tpRegexParse");
-            this.tpRegexParse.Name = "tpRegexParse";
-            this.tpRegexParse.UseVisualStyleBackColor = true;
-            // 
-            // lblRegex
-            // 
-            resources.ApplyResources(this.lblRegex, "lblRegex");
-            this.lblRegex.Name = "lblRegex";
-            // 
-            // dgvRegex
-            // 
-            this.dgvRegex.AllowUserToResizeRows = false;
-            this.dgvRegex.BackgroundColor = System.Drawing.SystemColors.Window;
-            this.dgvRegex.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Single;
-            dataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle7.Padding = new System.Windows.Forms.Padding(0, 2, 0, 2);
-            dataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvRegex.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle7;
-            this.dgvRegex.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dgvRegex.ColumnHeadersVisible = false;
-            this.dgvRegex.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.cRegex});
-            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle8.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.Padding = new System.Windows.Forms.Padding(1, 0, 0, 0);
-            dataGridViewCellStyle8.SelectionBackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dgvRegex.DefaultCellStyle = dataGridViewCellStyle8;
-            this.dgvRegex.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.dgvRegex.GridColor = System.Drawing.SystemColors.ControlLight;
-            resources.ApplyResources(this.dgvRegex, "dgvRegex");
-            this.dgvRegex.MultiSelect = false;
-            this.dgvRegex.Name = "dgvRegex";
-            this.dgvRegex.RowHeadersVisible = false;
-            this.dgvRegex.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvRegex_CellValueChanged);
-            this.dgvRegex.SelectionChanged += new System.EventHandler(this.dgvRegex_SelectionChanged);
-            // 
-            // cRegex
-            // 
-            this.cRegex.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            resources.ApplyResources(this.cRegex, "cRegex");
-            this.cRegex.Name = "cRegex";
-            this.cRegex.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // btnRegexAddSyntax
-            // 
-            resources.ApplyResources(this.btnRegexAddSyntax, "btnRegexAddSyntax");
-            this.btnRegexAddSyntax.Name = "btnRegexAddSyntax";
-            this.btnRegexAddSyntax.UseVisualStyleBackColor = true;
-            this.btnRegexAddSyntax.Click += new System.EventHandler(this.btnCustomUploaderRegexAddSyntax_Click);
-            // 
-            // tpTest
-            // 
-            this.tpTest.Controls.Add(this.tcTest);
-            resources.ApplyResources(this.tpTest, "tpTest");
-            this.tpTest.Name = "tpTest";
-            this.tpTest.UseVisualStyleBackColor = true;
-            // 
-            // tcTest
-            // 
-            this.tcTest.Controls.Add(this.tpResult);
-            this.tcTest.Controls.Add(this.tpResponseText);
-            resources.ApplyResources(this.tcTest, "tcTest");
-            this.tcTest.Name = "tcTest";
-            this.tcTest.SelectedIndex = 0;
-            // 
-            // tpResult
-            // 
-            this.tpResult.Controls.Add(this.pResult);
-            resources.ApplyResources(this.tpResult, "tpResult");
-            this.tpResult.Name = "tpResult";
-            this.tpResult.UseVisualStyleBackColor = true;
-            // 
-            // pResult
-            // 
-            this.pResult.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pResult.Controls.Add(this.rtbResult);
-            resources.ApplyResources(this.pResult, "pResult");
-            this.pResult.Name = "pResult";
-            // 
-            // rtbResult
-            // 
-            this.rtbResult.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            resources.ApplyResources(this.rtbResult, "rtbResult");
-            this.rtbResult.Name = "rtbResult";
-            this.rtbResult.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.txtCustomUploaderLog_LinkClicked);
-            // 
-            // tpResponseText
-            // 
-            this.tpResponseText.Controls.Add(this.tscResponseText);
-            resources.ApplyResources(this.tpResponseText, "tpResponseText");
-            this.tpResponseText.Name = "tpResponseText";
-            this.tpResponseText.UseVisualStyleBackColor = true;
             // 
             // lblDestinationType
             // 
@@ -1023,39 +691,68 @@
             this.ttHelpTip.AutoPopDelay = 30000;
             this.ttHelpTip.BackColor = System.Drawing.SystemColors.Window;
             this.ttHelpTip.InitialDelay = 500;
-            this.ttHelpTip.IsBalloon = true;
             this.ttHelpTip.ReshowDelay = 100;
             this.ttHelpTip.UseAnimation = false;
             this.ttHelpTip.UseFading = false;
             // 
-            // pResponseText
+            // lblUploaders
             // 
-            this.pResponseText.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.pResponseText.Controls.Add(this.rtbResponseText);
-            resources.ApplyResources(this.pResponseText, "pResponseText");
-            this.pResponseText.Name = "pResponseText";
+            resources.ApplyResources(this.lblUploaders, "lblUploaders");
+            this.lblUploaders.Name = "lblUploaders";
             // 
-            // rtbResponseText
+            // pMain
             // 
-            this.rtbResponseText.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            resources.ApplyResources(this.rtbResponseText, "rtbResponseText");
-            this.rtbResponseText.Name = "rtbResponseText";
-            this.rtbResponseText.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.txtCustomUploaderLog_LinkClicked);
+            this.pMain.Controls.Add(this.btnTestURLSyntax);
+            this.pMain.Controls.Add(this.pResultErrorMessage);
+            this.pMain.Controls.Add(this.dgvHeaders);
+            this.pMain.Controls.Add(this.lblResultErrorMessage);
+            this.pMain.Controls.Add(this.txtName);
+            this.pMain.Controls.Add(this.dgvParameters);
+            this.pMain.Controls.Add(this.pResultDeletionURL);
+            this.pMain.Controls.Add(this.lblName);
+            this.pMain.Controls.Add(this.lblResultDeletionURL);
+            this.pMain.Controls.Add(this.lblHeaders);
+            this.pMain.Controls.Add(this.pResultThumbnailURL);
+            this.pMain.Controls.Add(this.mbDestinationType);
+            this.pMain.Controls.Add(this.pResultURL);
+            this.pMain.Controls.Add(this.lblParameters);
+            this.pMain.Controls.Add(this.lblResultThumbnailURL);
+            this.pMain.Controls.Add(this.lblDestinationType);
+            this.pMain.Controls.Add(this.lblResultURL);
+            this.pMain.Controls.Add(this.pRequestURL);
+            this.pMain.Controls.Add(this.cbRequestMethod);
+            this.pMain.Controls.Add(this.lblRequestURL);
+            this.pMain.Controls.Add(this.cbBody);
+            this.pMain.Controls.Add(this.lblBody);
+            this.pMain.Controls.Add(this.lblRequestMethod);
+            this.pMain.Controls.Add(this.pBodyArguments);
+            this.pMain.Controls.Add(this.pBodyData);
+            resources.ApplyResources(this.pMain, "pMain");
+            this.pMain.Name = "pMain";
+            // 
+            // btnTestURLSyntax
+            // 
+            resources.ApplyResources(this.btnTestURLSyntax, "btnTestURLSyntax");
+            this.btnTestURLSyntax.Name = "btnTestURLSyntax";
+            this.btnTestURLSyntax.UseVisualStyleBackColor = true;
+            this.btnTestURLSyntax.Click += new System.EventHandler(this.btnTestURLSyntax_Click);
             // 
             // CustomUploaderSettingsForm
             // 
             this.AllowDrop = true;
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.BackColor = System.Drawing.SystemColors.Window;
-            this.Controls.Add(this.tcCustomUploader);
-            this.Controls.Add(this.lblDestinationType);
-            this.Controls.Add(this.mbDestinationType);
-            this.Controls.Add(this.lblName);
+            this.Controls.Add(this.pMain);
+            this.Controls.Add(this.lblUploaders);
+            this.Controls.Add(this.mbHelp);
+            this.Controls.Add(this.btnNew);
+            this.Controls.Add(this.btnDuplicate);
+            this.Controls.Add(this.eiCustomUploaders);
+            this.Controls.Add(this.lbCustomUploaderList);
+            this.Controls.Add(this.btnRemove);
             this.Controls.Add(this.btnURLSharingServiceTest);
-            this.Controls.Add(this.txtName);
             this.Controls.Add(this.cbURLSharingService);
-            this.Controls.Add(this.gbCustomUploaders);
             this.Controls.Add(this.lblURLSharingService);
             this.Controls.Add(this.cbImageUploader);
             this.Controls.Add(this.btnTextUploaderTest);
@@ -1070,21 +767,11 @@
             this.Controls.Add(this.cbFileUploader);
             this.Controls.Add(this.cbURLShortener);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "CustomUploaderSettingsForm";
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.CustomUploaderSettingsForm_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.CustomUploaderSettingsForm_DragEnter);
-            this.tscResponseText.ContentPanel.ResumeLayout(false);
-            this.tscResponseText.TopToolStripPanel.ResumeLayout(false);
-            this.tscResponseText.TopToolStripPanel.PerformLayout();
-            this.tscResponseText.ResumeLayout(false);
-            this.tscResponseText.PerformLayout();
-            this.tsResponseText.ResumeLayout(false);
-            this.tsResponseText.PerformLayout();
-            this.gbCustomUploaders.ResumeLayout(false);
             this.cmsHelp.ResumeLayout(false);
-            this.tcCustomUploader.ResumeLayout(false);
-            this.tpRequest.ResumeLayout(false);
-            this.tpRequest.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvHeaders)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParameters)).EndInit();
             this.pRequestURL.ResumeLayout(false);
@@ -1093,25 +780,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvArguments)).EndInit();
             this.pBodyData.ResumeLayout(false);
             this.pData.ResumeLayout(false);
-            this.tpResponse.ResumeLayout(false);
-            this.tpResponse.PerformLayout();
+            this.pResultErrorMessage.ResumeLayout(false);
             this.pResultDeletionURL.ResumeLayout(false);
             this.pResultThumbnailURL.ResumeLayout(false);
             this.pResultURL.ResumeLayout(false);
-            this.tcResponseParse.ResumeLayout(false);
-            this.tpJsonParse.ResumeLayout(false);
-            this.tpJsonParse.PerformLayout();
-            this.tpXmlParse.ResumeLayout(false);
-            this.tpXmlParse.PerformLayout();
-            this.tpRegexParse.ResumeLayout(false);
-            this.tpRegexParse.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvRegex)).EndInit();
-            this.tpTest.ResumeLayout(false);
-            this.tcTest.ResumeLayout(false);
-            this.tpResult.ResumeLayout(false);
-            this.pResult.ResumeLayout(false);
-            this.tpResponseText.ResumeLayout(false);
-            this.pResponseText.ResumeLayout(false);
+            this.pMain.ResumeLayout(false);
+            this.pMain.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1125,10 +799,8 @@
         private System.Windows.Forms.ComboBox cbTextUploader;
         private System.Windows.Forms.Button btnURLShortenerTest;
         private System.Windows.Forms.Label lblTextUploader;
-        private System.Windows.Forms.GroupBox gbCustomUploaders;
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnDuplicate;
-        private System.Windows.Forms.Button btnClearUploaders;
         private HelpersLib.ExportImportControl eiCustomUploaders;
         private System.Windows.Forms.ListBox lbCustomUploaderList;
         private System.Windows.Forms.Button btnRemove;
@@ -1138,8 +810,6 @@
         private System.Windows.Forms.Label lblFileUploader;
         private System.Windows.Forms.Button btnFileUploaderTest;
         private System.Windows.Forms.Label lblImageUploader;
-        private System.Windows.Forms.TabControl tcCustomUploader;
-        private System.Windows.Forms.TabPage tpRequest;
         private System.Windows.Forms.Label lblHeaders;
         private System.Windows.Forms.Label lblParameters;
         private System.Windows.Forms.Panel pRequestURL;
@@ -1157,8 +827,6 @@
         private System.Windows.Forms.Button btnDataMinify;
         private System.Windows.Forms.Panel pData;
         private System.Windows.Forms.RichTextBox rtbData;
-        private System.Windows.Forms.TabPage tpResponse;
-        private System.Windows.Forms.Label lblParseResponse;
         private System.Windows.Forms.Panel pResultDeletionURL;
         private System.Windows.Forms.RichTextBox rtbResultDeletionURL;
         private System.Windows.Forms.Label lblResultDeletionURL;
@@ -1168,32 +836,6 @@
         private System.Windows.Forms.RichTextBox rtbResultURL;
         private System.Windows.Forms.Label lblResultThumbnailURL;
         private System.Windows.Forms.Label lblResultURL;
-        private System.Windows.Forms.TabControl tcResponseParse;
-        private System.Windows.Forms.TabPage tpJsonParse;
-        private System.Windows.Forms.Button btnJsonAddSyntax;
-        private System.Windows.Forms.Button btnJsonPathHelp;
-        private System.Windows.Forms.Label lblJsonPathExample;
-        private System.Windows.Forms.Label lblJsonPath;
-        private System.Windows.Forms.TextBox txtJsonPath;
-        private System.Windows.Forms.TabPage tpXmlParse;
-        private System.Windows.Forms.Button btnXmlAddSyntax;
-        private System.Windows.Forms.Button btnXPathHelp;
-        private System.Windows.Forms.Label lblXPathExample;
-        private System.Windows.Forms.Label lblXPath;
-        private System.Windows.Forms.TextBox txtXPath;
-        private System.Windows.Forms.TabPage tpRegexParse;
-        private System.Windows.Forms.Button btnRegexAddSyntax;
-        private System.Windows.Forms.TabPage tpTest;
-        private System.Windows.Forms.TabControl tcTest;
-        private System.Windows.Forms.TabPage tpResult;
-        private System.Windows.Forms.Panel pResult;
-        private System.Windows.Forms.RichTextBox rtbResult;
-        private System.Windows.Forms.TabPage tpResponseText;
-        private System.Windows.Forms.ToolStripContainer tscResponseText;
-        private System.Windows.Forms.ToolStrip tsResponseText;
-        private System.Windows.Forms.ToolStripButton tsbResponseTextJSONFormat;
-        private System.Windows.Forms.ToolStripButton tsbResponseTextXMLFormat;
-        private System.Windows.Forms.ToolStripButton tsbResponseTextCopy;
         private System.Windows.Forms.Label lblDestinationType;
         private System.Windows.Forms.Label lblName;
         private HelpersLib.MenuButton mbDestinationType;
@@ -1205,7 +847,6 @@
         private System.Windows.Forms.Button btnURLSharingServiceTest;
         private System.Windows.Forms.ContextMenuStrip cmsHelp;
         private System.Windows.Forms.ToolStripMenuItem tsmiCustomUploaderGuide;
-        private System.Windows.Forms.ToolStripMenuItem tsmiCustomUploaders;
         private System.Windows.Forms.ToolStripMenuItem tsmiExportAll;
         private HelpersLib.MenuButton mbHelp;
         private System.Windows.Forms.DataGridView dgvParameters;
@@ -1215,12 +856,15 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn cHeadersValue;
         private System.Windows.Forms.DataGridViewTextBoxColumn cParametersName;
         private System.Windows.Forms.DataGridViewTextBoxColumn cParametersValue;
+        private System.Windows.Forms.ToolStripMenuItem tsmiUpdateFolder;
+        private System.Windows.Forms.Panel pResultErrorMessage;
+        private System.Windows.Forms.RichTextBox rtbResultErrorMessage;
+        private System.Windows.Forms.Label lblResultErrorMessage;
+        private System.Windows.Forms.Label lblUploaders;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClearUploaders;
+        private System.Windows.Forms.Panel pMain;
         private System.Windows.Forms.DataGridViewTextBoxColumn cArgumentsName;
         private System.Windows.Forms.DataGridViewTextBoxColumn cArgumentsValue;
-        private System.Windows.Forms.DataGridView dgvRegex;
-        private System.Windows.Forms.DataGridViewTextBoxColumn cRegex;
-        private System.Windows.Forms.Label lblRegex;
-        private System.Windows.Forms.Panel pResponseText;
-        private System.Windows.Forms.RichTextBox rtbResponseText;
+        private System.Windows.Forms.Button btnTestURLSyntax;
     }
 }

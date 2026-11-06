@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -24,15 +24,51 @@
 #endregion License Information (GPL v3)
 
 using System.Net;
+using System.Text;
 
 namespace ShareX.UploadersLib
 {
     public class ResponseInfo
     {
         public HttpStatusCode StatusCode { get; set; }
-        public bool IsSuccess => UploadHelpers.IsSuccessStatusCode(StatusCode);
+        public string StatusDescription { get; set; }
+        public bool IsSuccess => RequestHelpers.IsSuccessStatusCode(StatusCode);
         public string ResponseURL { get; set; }
         public WebHeaderCollection Headers { get; set; }
         public string ResponseText { get; set; }
+
+        public string ToReadableString(bool includeResponseText)
+        {
+            StringBuilder sbResponseInfo = new StringBuilder();
+
+            sbResponseInfo.AppendLine("Status code:");
+            sbResponseInfo.Append($"({(int)StatusCode}) {StatusDescription}");
+
+            if (!string.IsNullOrEmpty(ResponseURL))
+            {
+                sbResponseInfo.AppendLine();
+                sbResponseInfo.AppendLine();
+                sbResponseInfo.AppendLine("Response URL:");
+                sbResponseInfo.Append(ResponseURL);
+            }
+
+            if (Headers != null && Headers.Count > 0)
+            {
+                sbResponseInfo.AppendLine();
+                sbResponseInfo.AppendLine();
+                sbResponseInfo.AppendLine("Headers:");
+                sbResponseInfo.Append(Headers.ToString().TrimEnd());
+            }
+
+            if (includeResponseText && !string.IsNullOrEmpty(ResponseText))
+            {
+                sbResponseInfo.AppendLine();
+                sbResponseInfo.AppendLine();
+                sbResponseInfo.AppendLine("Response text:");
+                sbResponseInfo.Append(ResponseText);
+            }
+
+            return sbResponseInfo.ToString();
+        }
     }
 }

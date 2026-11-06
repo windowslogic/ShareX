@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -35,6 +35,7 @@ namespace ShareX.HelpersLib
     {
         public delegate void ListViewItemMovedEventHandler(object sender, int oldIndex, int newIndex);
 
+        public event ListViewItemMovedEventHandler ItemMoving;
         public event ListViewItemMovedEventHandler ItemMoved;
 
         [DefaultValue(false)]
@@ -49,6 +50,9 @@ namespace ShareX.HelpersLib
         // Note: AllowDrag also need to be true.
         [DefaultValue(false)]
         public bool AllowItemDrag { get; set; }
+
+        [DefaultValue(true)]
+        public bool AllowSelectAll { get; set; }
 
         [DefaultValue(false)]
         public bool DisableDeselect { get; set; }
@@ -71,7 +75,9 @@ namespace ShareX.HelpersLib
 
                 if (value > -1)
                 {
-                    Items[value].Selected = true;
+                    ListViewItem lvi = Items[value];
+                    lvi.EnsureVisible();
+                    lvi.Selected = true;
                 }
             }
         }
@@ -88,6 +94,7 @@ namespace ShareX.HelpersLib
             AutoFillColumn = false;
             AutoFillColumnIndex = -1;
             AllowColumnSort = false;
+            AllowSelectAll = true;
             FullRowSelect = true;
             View = View.Details;
 
@@ -151,22 +158,38 @@ namespace ShareX.HelpersLib
             }
         }
 
-        public void UnselectAll()
+        public void SelectAll()
         {
-            foreach (ListViewItem lvi in SelectedItems)
-            {
-                lvi.Selected = false;
-            }
-        }
-
-        protected override void OnKeyDown(KeyEventArgs e)
-        {
-            if (MultiSelect && e.Control && e.KeyCode == Keys.A)
+            if (AllowSelectAll && MultiSelect)
             {
                 foreach (ListViewItem lvi in Items)
                 {
                     lvi.Selected = true;
                 }
+            }
+        }
+
+        public void UnselectAll()
+        {
+            if (MultiSelect)
+            {
+                SelectedItems.Clear();
+            }
+        }
+
+        public void EnsureSelectedVisible()
+        {
+            if (SelectedItems.Count > 0)
+            {
+                SelectedItems[0].EnsureVisible();
+            }
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            if (e.KeyData == (Keys.Control | Keys.A))
+            {
+                SelectAll();
             }
 
             base.OnKeyDown(e);
@@ -223,9 +246,7 @@ namespace ShareX.HelpersLib
         {
             base.OnDragOver(drgevent);
 
-            ListViewItem lvi = drgevent.Data.GetData(typeof(ListViewItem)) as ListViewItem;
-
-            if (lvi != null && lvi.ListView == this)
+            if (drgevent.Data.GetData(typeof(ListViewItem)) is ListViewItem lvi && lvi.ListView == this)
             {
                 drgevent.Effect = DragDropEffects.Move;
 
@@ -254,9 +275,7 @@ namespace ShareX.HelpersLib
         {
             base.OnDragDrop(drgevent);
 
-            ListViewItem lvi = drgevent.Data.GetData(typeof(ListViewItem)) as ListViewItem;
-
-            if (lvi != null && lvi.ListView == this && lvi != dragOverItem)
+            if (drgevent.Data.GetData(typeof(ListViewItem)) is ListViewItem lvi && lvi.ListView == this && lvi != dragOverItem)
             {
                 int oldIndex = lvi.Index;
                 int newIndex;
@@ -275,6 +294,8 @@ namespace ShareX.HelpersLib
                     newIndex = Items.Count - 1;
                 }
 
+                OnItemMoving(oldIndex, newIndex);
+
                 Items.RemoveAt(oldIndex);
                 Items.Insert(newIndex, lvi);
 
@@ -285,12 +306,14 @@ namespace ShareX.HelpersLib
             Invalidate();
         }
 
+        protected void OnItemMoving(int oldIndex, int newIndex)
+        {
+            ItemMoving?.Invoke(this, oldIndex, newIndex);
+        }
+
         protected void OnItemMoved(int oldIndex, int newIndex)
         {
-            if (ItemMoved != null)
-            {
-                ItemMoved(this, oldIndex, newIndex);
-            }
+            ItemMoved?.Invoke(this, oldIndex, newIndex);
         }
 
         protected override void OnDragLeave(EventArgs e)
@@ -324,7 +347,7 @@ namespace ShareX.HelpersLib
                     lvwColumnSorter.Order = SortOrder.Ascending;
                 }
 
-                // if the column is tagged as a DateTime, then sort by date
+                // If the column is tagged as a DateTime, then sort by date
                 lvwColumnSorter.SortByDate = Columns[e.Column].Tag is DateTime;
 
                 Cursor.Current = Cursors.WaitCursor;
@@ -350,6 +373,7 @@ namespace ShareX.HelpersLib
         protected override void ScaleControl(SizeF factor, BoundsSpecified specified)
         {
             base.ScaleControl(factor, specified);
+
             foreach (ColumnHeader column in Columns)
             {
                 column.Width = (int)Math.Round(column.Width * factor.Width);

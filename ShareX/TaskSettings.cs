@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -30,7 +30,6 @@ using ShareX.IndexerLib;
 using ShareX.MediaLib;
 using ShareX.ScreenCaptureLib;
 using ShareX.UploadersLib;
-using ShareX.UploadersLib.OtherServices;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -45,6 +44,9 @@ namespace ShareX
     {
         [JsonIgnore]
         public TaskSettings TaskSettingsReference { get; private set; }
+
+        [JsonIgnore]
+        public bool IsSafeTaskSettings => TaskSettingsReference != null;
 
         public string Description = "";
 
@@ -70,6 +72,9 @@ namespace ShareX
 
         public bool OverrideCustomUploader = false;
         public int CustomUploaderIndex = 0;
+
+        public bool OverrideScreenshotsFolder = false;
+        public string ScreenshotsFolder = "";
 
         public bool UseDefaultGeneralSettings = true;
         public TaskSettingsGeneral GeneralSettings = new TaskSettingsGeneral();
@@ -146,23 +151,9 @@ namespace ShareX
         {
             get
             {
-                return UseDefaultAfterCaptureJob && UseDefaultAfterUploadJob && UseDefaultDestinations && !OverrideFTP && !OverrideCustomUploader && UseDefaultGeneralSettings &&
-                    UseDefaultImageSettings && UseDefaultCaptureSettings && UseDefaultUploadSettings && UseDefaultActions && UseDefaultToolsSettings &&
-                    UseDefaultAdvancedSettings && !WatchFolderEnabled;
-            }
-        }
-
-        public string CaptureFolder
-        {
-            get
-            {
-                if (!string.IsNullOrEmpty(AdvancedSettings.CapturePath))
-                {
-                    string captureFolderPath = NameParser.Parse(NameParserType.FolderPath, AdvancedSettings.CapturePath);
-                    return Helpers.GetAbsolutePath(captureFolderPath);
-                }
-
-                return Program.ScreenshotsFolder;
+                return UseDefaultAfterCaptureJob && UseDefaultAfterUploadJob && UseDefaultDestinations && !OverrideFTP && !OverrideCustomUploader &&
+                    !OverrideScreenshotsFolder && UseDefaultGeneralSettings && UseDefaultImageSettings && UseDefaultCaptureSettings && UseDefaultUploadSettings &&
+                    UseDefaultActions && UseDefaultToolsSettings && UseDefaultAdvancedSettings && !WatchFolderEnabled;
             }
         }
 
@@ -275,12 +266,31 @@ namespace ShareX
 
     public class TaskSettingsGeneral
     {
+        #region General / Notifications
+
         public bool PlaySoundAfterCapture = true;
-        public bool ShowAfterCaptureTasksForm = false;
-        public bool ShowBeforeUploadForm = false;
         public bool PlaySoundAfterUpload = true;
+        public bool ShowToastNotificationAfterTaskCompleted = true;
+        public float ToastWindowDuration = 3f;
+        public float ToastWindowFadeDuration = 1f;
+        public ContentAlignment ToastWindowPlacement = ContentAlignment.BottomRight;
+        public Size ToastWindowSize = new Size(400, 300);
+        public ToastClickAction ToastWindowLeftClickAction = ToastClickAction.OpenUrl;
+        public ToastClickAction ToastWindowRightClickAction = ToastClickAction.CloseNotification;
+        public ToastClickAction ToastWindowMiddleClickAction = ToastClickAction.AnnotateImage;
+        public bool ToastWindowAutoHide = true;
+        public bool UseCustomCaptureSound = false;
+        public string CustomCaptureSoundPath = "";
+        public bool UseCustomTaskCompletedSound = false;
+        public string CustomTaskCompletedSoundPath = "";
+        public bool UseCustomErrorSound = false;
+        public string CustomErrorSoundPath = "";
+        public bool DisableNotifications = false;
+        public bool DisableNotificationsOnFullscreen = false;
+
         public PopUpNotificationType PopUpNotification = PopUpNotificationType.ToastNotification;
-        public bool ShowAfterUploadForm = false;
+
+        #endregion
     }
 
     public class TaskSettingsImage
@@ -293,6 +303,7 @@ namespace ShareX
         public GIFQuality ImageGIFQuality = GIFQuality.Default;
         public bool ImageAutoUseJPEG = true;
         public int ImageAutoUseJPEGSize = 2048;
+        public bool ImageAutoJPEGQuality = false;
         public FileExistAction FileExistAction = FileExistAction.Ask;
 
         #endregion Image / General
@@ -325,7 +336,7 @@ namespace ShareX
         public decimal ScreenshotDelay = 0;
         public bool CaptureTransparent = false;
         public bool CaptureShadow = true;
-        public int CaptureShadowOffset = 20;
+        public int CaptureShadowOffset = 100;
         public bool CaptureClientArea = false;
         public bool CaptureAutoHideTaskbar = false;
         public Rectangle CaptureCustomRegion = new Rectangle(0, 0, 0, 0);
@@ -350,6 +361,7 @@ namespace ShareX
         public float ScreenRecordDuration = 3f;
         public bool ScreenRecordTwoPassEncoding = false;
         public bool ScreenRecordAskConfirmationOnAbort = false;
+        public bool ScreenRecordTransparentRegion = false;
 
         #endregion Capture / Screen recorder
 
@@ -368,17 +380,19 @@ namespace ShareX
 
     public class TaskSettingsUpload
     {
-        #region Upload
+        #region Upload / File naming
 
         public bool UseCustomTimeZone = false;
         public TimeZoneInfo CustomTimeZone = TimeZoneInfo.Utc;
         public string NameFormatPattern = "%ra{10}";
         public string NameFormatPatternActiveWindow = "%pn_%ra{10}";
-        public bool RegionCaptureUseWindowPattern = true;
         public bool FileUploadUseNamePattern = false;
         public bool FileUploadReplaceProblematicCharacters = false;
+        public bool URLRegexReplace = false;
+        public string URLRegexReplacePattern = "^https?://(.+)$";
+        public string URLRegexReplaceReplacement = "https://$1";
 
-        #endregion Upload
+        #endregion Upload / File naming
 
         #region Upload / Clipboard upload
 
@@ -389,15 +403,23 @@ namespace ShareX
 
         #endregion Upload / Clipboard upload
 
+        #region Upload / Uploader filters
+
         public List<UploaderFilter> UploaderFilters = new List<UploaderFilter>();
+
+        #endregion Upload / Uploader filters
     }
 
     public class TaskSettingsTools
     {
         public string ScreenColorPickerFormat = "$hex";
+        public string ScreenColorPickerFormatCtrl = "$r255, $g255, $b255";
+        public string ScreenColorPickerInfoText = "RGB: $r255, $g255, $b255$nHex: $hex$nX: $x Y: $y";
         public IndexerSettings IndexerSettings = new IndexerSettings();
         public ImageCombinerOptions ImageCombinerOptions = new ImageCombinerOptions();
+        public VideoConverterOptions VideoConverterOptions = new VideoConverterOptions();
         public VideoThumbnailOptions VideoThumbnailOptions = new VideoThumbnailOptions();
+        public BorderlessWindowSettings BorderlessWindowSettings = new BorderlessWindowSettings();
     }
 
     public class TaskSettingsAdvanced
@@ -417,37 +439,6 @@ namespace ShareX
         [Category("General"), DefaultValue(false), Description("If task contains upload job then this setting will clear clipboard when task start.")]
         public bool AutoClearClipboard { get; set; }
 
-        [Category("Sound"), DefaultValue(false), Description("Enable/disable custom capture sound.")]
-        public bool UseCustomCaptureSound { get; set; }
-
-        [Category("Sound"), DefaultValue(""), Description("Capture sound file path."),
-        Editor(typeof(WavFileNameEditor), typeof(UITypeEditor))]
-        public string CustomCaptureSoundPath { get; set; }
-
-        [Category("Sound"), DefaultValue(""), Description("If this text is not empty then when the screen is captured text to speech engine will say the phrase entered instead of playing the default sound.")]
-        public string SpeechCapture { get; set; }
-
-        [Category("Sound"), DefaultValue(false), Description("Enable/disable custom task complete sound.")]
-        public bool UseCustomTaskCompletedSound { get; set; }
-
-        [Category("Sound"), DefaultValue(""), Description("Task complete sound file path."),
-        Editor(typeof(WavFileNameEditor), typeof(UITypeEditor))]
-        public string CustomTaskCompletedSoundPath { get; set; }
-
-        [Category("Sound"), DefaultValue(""), Description("If this text is not empty then when a task is completed text to speech engine will say the phrase entered instead of playing the default sound.")]
-        public string SpeechTaskCompleted { get; set; }
-
-        [Category("Sound"), DefaultValue(false), Description("Enable/disable custom error sound.")]
-        public bool UseCustomErrorSound { get; set; }
-
-        [Category("Sound"), DefaultValue(""), Description("Error sound file path."),
-        Editor(typeof(WavFileNameEditor), typeof(UITypeEditor))]
-        public string CustomErrorSoundPath { get; set; }
-
-        [Category("Paths"), Description("Custom capture path takes precedence over path configured in Application configuration."),
-        Editor(typeof(DirectoryNameEditor), typeof(UITypeEditor))]
-        public string CapturePath { get; set; }
-
         [Category("Capture"), DefaultValue(false), Description("Disable annotation support in region capture.")]
         public bool RegionCaptureDisableAnnotation { get; set; }
 
@@ -455,12 +446,25 @@ namespace ShareX
         Editor("System.Windows.Forms.Design.StringCollectionEditor,System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
         public List<string> ImageExtensions { get; set; }
 
-        [Category("Upload"), DefaultValue(false), Description("Copy URL before start upload. Only works for FTP, FTPS, SFTP, Amazon S3, Google Cloud Storage and Azure Storage.")]
-        public bool EarlyCopyURL { get; set; }
-
         [Category("Upload"), Description("Files with these file extensions will be uploaded using text uploader."),
         Editor("System.Windows.Forms.Design.StringCollectionEditor,System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a", typeof(UITypeEditor))]
         public List<string> TextExtensions { get; set; }
+
+        [Category("Upload"), DefaultValue(false), Description("Copy URL before start upload. Only works for FTP, FTPS, SFTP, Amazon S3, Google Cloud Storage and Azure Storage.")]
+        public bool EarlyCopyURL { get; set; }
+
+        [Category("Upload text"), DefaultValue("txt"), Description("File extension when saving text to the local hard disk.")]
+        public string TextFileExtension { get; set; }
+
+        [Category("Upload text"), DefaultValue("text"), Description("Text format e.g. csharp, cpp, etc.")]
+        public string TextFormat { get; set; }
+
+        [Category("Upload text"), DefaultValue(""), Description("Custom text input. Use %input for text input. Example you can create web page with your text in it."),
+        Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
+        public string TextCustom { get; set; }
+
+        [Category("Upload text"), DefaultValue(true), Description("HTML encode custom text input.")]
+        public bool TextCustomEncodeInput { get; set; }
 
         [Category("After upload"), DefaultValue(false), Description("If result URL starts with \"http://\" then replace it with \"https://\".")]
         public bool ResultForceHTTPS { get; set; }
@@ -478,81 +482,8 @@ namespace ShareX
         [Category("After upload"), DefaultValue(0), Description("Automatically shorten URL if the URL is longer than the specified number of characters. 0 means automatic URL shortening is not active.")]
         public int AutoShortenURLLength { get; set; }
 
-        private float toastWindowDuration;
-
-        [Category("After upload / Notifications"), DefaultValue(3f), Description("Specify how long should toast notification window will stay on screen (in seconds).")]
-        public float ToastWindowDuration
-        {
-            get
-            {
-                return toastWindowDuration;
-            }
-            set
-            {
-                toastWindowDuration = value.Between(0, 30);
-            }
-        }
-
-        private float toastWindowFadeDuration;
-
-        [Category("After upload / Notifications"), DefaultValue(1f), Description("After toast window duration end, toast window will start fading, specify duration of this fade animation (in seconds).")]
-        public float ToastWindowFadeDuration
-        {
-            get
-            {
-                return toastWindowFadeDuration;
-            }
-            set
-            {
-                toastWindowFadeDuration = value.Between(0, 30);
-            }
-        }
-
-        [Category("After upload / Notifications"), DefaultValue(ContentAlignment.BottomRight), Description("Specify where should toast notification window appear on the screen.")]
-        public ContentAlignment ToastWindowPlacement { get; set; }
-
-        [Category("After upload / Notifications"), DefaultValue(ToastClickAction.OpenUrl), Description("Specify action after toast notification window is left clicked."), TypeConverter(typeof(EnumDescriptionConverter))]
-        public ToastClickAction ToastWindowClickAction { get; set; }
-
-        [Category("After upload / Notifications"), DefaultValue(ToastClickAction.CloseNotification), Description("Specify action after toast notification window is right clicked."), TypeConverter(typeof(EnumDescriptionConverter))]
-        public ToastClickAction ToastWindowRightClickAction { get; set; }
-
-        [Category("After upload / Notifications"), DefaultValue(ToastClickAction.AnnotateImage), Description("Specify action after toast notification window is middle clicked."), TypeConverter(typeof(EnumDescriptionConverter))]
-        public ToastClickAction ToastWindowMiddleClickAction { get; set; }
-
-        private Size toastWindowSize;
-
-        [Category("After upload / Notifications"), DefaultValue(typeof(Size), "400, 300"), Description("Maximum toast notification window size.")]
-        public Size ToastWindowSize
-        {
-            get
-            {
-                return toastWindowSize;
-            }
-            set
-            {
-                toastWindowSize = new Size(Math.Max(value.Width, 100), Math.Max(value.Height, 100));
-            }
-        }
-
         [Category("After upload"), DefaultValue(false), Description("After upload form will be automatically closed after 60 seconds.")]
         public bool AutoCloseAfterUploadForm { get; set; }
-
-        [Category("Interaction"), DefaultValue(false), Description("Disable notifications.")]
-        public bool DisableNotifications { get; set; }
-
-        [Category("Upload text"), DefaultValue("txt"), Description("File extension when saving text to the local hard disk.")]
-        public string TextFileExtension { get; set; }
-
-        [Category("Upload text"), DefaultValue("text"), Description("Text format e.g. csharp, cpp, etc.")]
-        public string TextFormat { get; set; }
-
-        [Category("Upload text"), DefaultValue(""), Description("Custom text input. Use %input for text input. Example you can create web page with your text in it."),
-        Editor(typeof(MultilineStringEditor), typeof(UITypeEditor))]
-        public string TextCustom { get; set; }
-
-        [Category("Upload text"), DefaultValue(true), Description("HTML encode custom text input.")]
-        public bool TextCustomEncodeInput { get; set; }
 
         [Category("Name pattern"), DefaultValue(100), Description("Maximum name pattern length for file name.")]
         public int NamePatternMaxLength { get; set; }
@@ -560,11 +491,14 @@ namespace ShareX
         [Category("Name pattern"), DefaultValue(50), Description("Maximum name pattern title (%t) length for file name.")]
         public int NamePatternMaxTitleLength { get; set; }
 
+        // TEMP: For backward compatibility
+        public string CapturePath;
+
         public TaskSettingsAdvanced()
         {
             this.ApplyDefaultPropertyValues();
-            ImageExtensions = Helpers.ImageFileExtensions.ToList();
-            TextExtensions = Helpers.TextFileExtensions.ToList();
+            ImageExtensions = FileHelpers.ImageFileExtensions.ToList();
+            TextExtensions = FileHelpers.TextFileExtensions.ToList();
         }
     }
 }

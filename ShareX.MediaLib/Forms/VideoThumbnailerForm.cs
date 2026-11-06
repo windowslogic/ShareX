@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -44,8 +44,10 @@ namespace ShareX.MediaLib
         {
             FFmpegPath = ffmpegPath;
             Options = options;
+
             InitializeComponent();
-            Icon = ShareXResources.Icon;
+            ShareXResources.ApplyTheme(this);
+
             txtMediaPath.Text = Options.LastVideoPath ?? "";
             pgOptions.SelectedObject = Options;
         }
@@ -69,9 +71,9 @@ namespace ShareX.MediaLib
                 {
                     try
                     {
-                        VideoThumbnailer thumbnailer = new VideoThumbnailer(mediaPath, FFmpegPath, Options);
+                        VideoThumbnailer thumbnailer = new VideoThumbnailer(FFmpegPath, Options);
                         thumbnailer.ProgressChanged += Thumbnailer_ProgressChanged;
-                        thumbnails = thumbnailer.TakeThumbnails();
+                        thumbnails = thumbnailer.TakeThumbnails(mediaPath);
                     }
                     catch (Exception ex)
                     {
@@ -96,15 +98,12 @@ namespace ShareX.MediaLib
 
         protected void OnThumbnailsTaken(List<VideoThumbnailInfo> thumbnails)
         {
-            if (ThumbnailsTaken != null)
-            {
-                ThumbnailsTaken(thumbnails);
-            }
+            ThumbnailsTaken?.Invoke(thumbnails);
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            Helpers.BrowseFile(Resources.VideoThumbnailerForm_btnBrowse_Click_Browse_for_media_file, txtMediaPath);
+            FileHelpers.BrowseFile(Resources.VideoThumbnailerForm_btnBrowse_Click_Browse_for_media_file, txtMediaPath);
         }
     }
 }

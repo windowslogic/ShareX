@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -27,7 +27,7 @@ using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
 
-#if WindowsStore
+#if MicrosoftStore
 using Windows.ApplicationModel;
 #endif
 
@@ -59,12 +59,22 @@ namespace ShareX
         Indonesian,
         [Description("Italiano (Italian)")]
         Italian,
+        [Description("日本語 (Japanese)")]
+        Japanese,
         [Description("한국어 (Korean)")]
         Korean,
         [Description("Español mexicano (Mexican Spanish)")]
         MexicanSpanish,
+        [Description("فارسی (Persian)")]
+        Persian,
+        [Description("Polski (Polish)")]
+        Polish,
+        [Description("Português (Portuguese)")]
+        Portuguese,
         [Description("Português-Brasil (Portuguese-Brazil)")]
         PortugueseBrazil,
+        [Description("Română (Romanian)")]
+        Romanian,
         [Description("Русский (Russian)")]
         Russian,
         [Description("简体中文 (Simplified Chinese)")]
@@ -174,6 +184,7 @@ namespace ShareX
         UploadURL,
         DragDropUpload,
         ShortenURL,
+        TweetMessage,
         StopUploads,
         // Screen capture
         PrintScreen,
@@ -185,7 +196,6 @@ namespace ShareX
         CustomRegion,
         LastRegion,
         ScrollingCapture,
-        TextCapture,
         AutoCapture,
         StartAutoCapture,
         // Screen record
@@ -197,21 +207,30 @@ namespace ShareX
         ScreenRecorderGIFActiveWindow,
         ScreenRecorderGIFCustomRegion,
         StartScreenRecorderGIF,
+        StopScreenRecording,
         AbortScreenRecording,
         // Tools
         ColorPicker,
         ScreenColorPicker,
+        Ruler,
         ImageEditor,
         ImageEffects,
-        HashCheck,
-        DNSChanger,
-        QRCode,
-        Ruler,
-        IndexFolder,
+        ImageViewer,
         ImageCombiner,
+        ImageSplitter,
+        ImageThumbnailer,
+        VideoConverter,
         VideoThumbnailer,
-        TweetMessage,
+        OCR,
+        QRCode,
+        QRCodeDecodeFromScreen,
+        HashCheck,
+        IndexFolder,
+        ClipboardViewer,
+        BorderlessWindow,
+        InspectWindow,
         MonitorTest,
+        DNSChanger,
         // Other
         DisableHotkeys,
         OpenMainWindow,
@@ -219,6 +238,7 @@ namespace ShareX
         OpenHistory,
         OpenImageHistory,
         ToggleActionsToolbar,
+        ToggleTrayMenu,
         ExitShareX
     }
 
@@ -229,25 +249,29 @@ namespace ShareX
         ToastNotification
     }
 
-    [DefaultValue(OpenUrl)]
-    public enum ToastClickAction
+    public enum ToastClickAction // Localized
     {
-        [Description("Close notification")]
         CloseNotification,
-        [Description("Annotate image")]
         AnnotateImage,
-        [Description("Copy image to clipboard")]
         CopyImageToClipboard,
-        [Description("Copy URL")]
+        CopyFile,
+        CopyFilePath,
         CopyUrl,
-        [Description("Open file")]
         OpenFile,
-        [Description("Open folder")]
         OpenFolder,
-        [Description("Open URL")]
         OpenUrl,
-        [Description("Upload")]
         Upload
+    }
+
+    public enum ThumbnailViewClickAction // Localized
+    {
+        Default,
+        Select,
+        OpenImageViewer,
+        OpenFile,
+        OpenFolder,
+        OpenURL,
+        EditImage
     }
 
     public enum FileExistAction // Localized
@@ -258,19 +282,19 @@ namespace ShareX
         Cancel
     }
 
-    public enum ImagePreviewVisibility
+    public enum ImagePreviewVisibility // Localized
     {
         Show, Hide, Automatic
     }
 
-    public enum ImagePreviewLocation
+    public enum ImagePreviewLocation // Localized
     {
         Side, Bottom
     }
 
-    public enum ScreenRecordState
+    public enum ThumbnailTitleLocation // Localized
     {
-        Waiting, BeforeStart, AfterStart, AfterRecordingStart, Encoding
+        Top, Bottom
     }
 
     public enum RegionCaptureType
@@ -278,7 +302,7 @@ namespace ShareX
         Default, Light, Transparent
     }
 
-#if !WindowsStore
+#if !MicrosoftStore
     public enum StartupState
     {
         Disabled,
@@ -297,4 +321,17 @@ namespace ShareX
         EnabledByPolicy = StartupTaskState.EnabledByPolicy
     }
 #endif
+
+    public enum BalloonTipClickAction
+    {
+        None,
+        OpenURL,
+        OpenDebugLog
+    }
+
+    public enum TaskViewMode // Localized
+    {
+        ListView,
+        ThumbnailView
+    }
 }

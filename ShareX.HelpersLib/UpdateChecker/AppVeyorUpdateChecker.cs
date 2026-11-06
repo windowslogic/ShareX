@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -30,6 +30,8 @@ namespace ShareX.HelpersLib
 {
     public class AppVeyorUpdateChecker : UpdateChecker
     {
+        public string Branch { get; set; } = "master";
+
         public override void CheckUpdate()
         {
             try
@@ -41,7 +43,7 @@ namespace ShareX.HelpersLib
                     Proxy = Proxy
                 };
 
-                AppVeyorProject project = appveyor.GetProjectByBranch("master");
+                AppVeyorProject project = appveyor.GetProjectByBranch(Branch);
 
                 if (!project.build.status.Equals("success", StringComparison.InvariantCultureIgnoreCase) &&
                     !project.build.status.Equals("running", StringComparison.InvariantCultureIgnoreCase))
@@ -61,14 +63,25 @@ namespace ShareX.HelpersLib
 
                 AppVeyorProjectArtifact[] artifacts = appveyor.GetArtifacts(job.jobId);
 
-                AppVeyorProjectArtifact artifact = artifacts.FirstOrDefault(x => x.name.Equals("Setup", StringComparison.InvariantCultureIgnoreCase));
+                string deploymentName;
+
+                if (IsPortable)
+                {
+                    deploymentName = "Portable";
+                }
+                else
+                {
+                    deploymentName = "Setup";
+                }
+
+                AppVeyorProjectArtifact artifact = artifacts.FirstOrDefault(x => x.name.Equals(deploymentName, StringComparison.InvariantCultureIgnoreCase));
 
                 if (artifact == null)
                 {
-                    throw new Exception("Unable to find setup file.");
+                    throw new Exception($"Unable to find \"{deploymentName}\" file.");
                 }
 
-                Filename = artifact.fileName;
+                FileName = artifact.fileName;
                 DownloadURL = appveyor.GetArtifactDownloadURL(job.jobId, artifact.fileName);
                 if (Version.TryParse(project.build.version, out Version version))
                 {

@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -26,6 +26,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace ShareX.HelpersLib
 {
@@ -40,9 +41,11 @@ namespace ShareX.HelpersLib
         public bool HiddenWindow { get; set; }
         public bool DeleteInputFile { get; set; }
 
+        private string pendingInputFilePath;
+
         public ExternalProgram()
         {
-            Args = "%input";
+            Args = '"' + CodeMenuEntryActions.input.ToPrefixString() + '"';
         }
 
         public ExternalProgram(string name, string path) : this()
@@ -51,21 +54,21 @@ namespace ShareX.HelpersLib
             Path = path;
         }
 
-        public ExternalProgram(string name, string path, string args) : this(name, path)
+        public string GetFullPath()
         {
-            if (!string.IsNullOrEmpty(args))
-            {
-                Args += " " + args;
-            }
+            return FileHelpers.ExpandFolderVariables(Path);
         }
 
         public string Run(string inputPath)
         {
-            if (!string.IsNullOrEmpty(Path) && File.Exists(Path) && !string.IsNullOrWhiteSpace(inputPath))
+            pendingInputFilePath = null;
+            string path = GetFullPath();
+
+            if (!string.IsNullOrEmpty(path) && File.Exists(path) && !string.IsNullOrWhiteSpace(inputPath))
             {
                 inputPath = inputPath.Trim('"');
 
-                if (CheckExtension(inputPath, Extensions))
+                if (CheckExtension(inputPath))
                 {
                     try
                     {
@@ -98,24 +101,27 @@ namespace ShareX.HelpersLib
                         {
                             ProcessStartInfo psi = new ProcessStartInfo()
                             {
-                                FileName = Path,
+                                FileName = path,
                                 Arguments = arguments,
                                 UseShellExecute = false,
                                 CreateNoWindow = HiddenWindow
                             };
 
+                            DebugHelper.WriteLine($"Action input: \"{inputPath}\" [{FileHelpers.GetFileSizeReadable(inputPath)}]");
+                            DebugHelper.WriteLine($"Action run: \"{psi.FileName}\" {psi.Arguments}");
+
                             process.StartInfo = psi;
-                            DebugHelper.WriteLine($"CLI: \"{psi.FileName}\" {psi.Arguments}");
                             process.Start();
                             process.WaitForExit();
                         }
 
                         if (!string.IsNullOrEmpty(outputPath) && File.Exists(outputPath))
                         {
-                            if (DeleteInputFile && !inputPath.Equals(outputPath, StringComparison.OrdinalIgnoreCase) && File.Exists(inputPath))
+                            DebugHelper.WriteLine($"Action output: \"{outputPath}\" [{FileHelpers.GetFileSizeReadable(outputPath)}]");
+
+                            if (DeleteInputFile && !inputPath.Equals(outputPath, StringComparison.OrdinalIgnoreCase))
                             {
-                                DebugHelper.WriteLine("Deleting input file: " + inputPath);
-                                File.Delete(inputPath);
+                                pendingInputFilePath = inputPath;
                             }
 
                             return outputPath;
@@ -130,10 +136,20 @@ namespace ShareX.HelpersLib
                 }
             }
 
-            return inputPath;
+            return null;
         }
 
-        private bool CheckExtension(string path, string extensions)
+        public Task<string> RunAsync(string inputPath)
+        {
+            return Task.Run(() => Run(inputPath));
+        }
+
+        public bool CheckExtension(string path)
+        {
+            return CheckExtension(path, Extensions);
+        }
+
+        public bool CheckExtension(string path, string extensions)
         {
             if (!string.IsNullOrWhiteSpace(path))
             {
@@ -164,6 +180,26 @@ namespace ShareX.HelpersLib
             }
 
             return false;
+        }
+
+        public void DeletePendingInputFile()
+        {
+            string inputPath = pendingInputFilePath;
+
+            if (!string.IsNullOrEmpty(inputPath) && File.Exists(inputPath))
+            {
+                DebugHelper.WriteLine($"Deleting input file: \"{inputPath}\"");
+
+                try
+                {
+                    File.Delete(inputPath);
+                    pendingInputFilePath = null;
+                }
+                catch (Exception e)
+                {
+                    DebugHelper.WriteException(e);
+                }
+            }
         }
     }
 }

@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -82,8 +82,13 @@ namespace ShareX.HelpersLib
             }
         }
 
-        public static string URLEncode(string text, bool isPath = false)
+        public static string URLEncode(string text, bool isPath = false, bool ignoreEmoji = false)
         {
+            if (ignoreEmoji)
+            {
+                return URLEncodeIgnoreEmoji(text, isPath);
+            }
+
             StringBuilder sb = new StringBuilder();
 
             if (!string.IsNullOrEmpty(text))
@@ -109,6 +114,30 @@ namespace ShareX.HelpersLib
                     {
                         sb.AppendFormat(CultureInfo.InvariantCulture, "%{0:X2}", (int)c);
                     }
+                }
+            }
+
+            return sb.ToString();
+        }
+
+        public static string URLEncodeIgnoreEmoji(string text, bool isPath = false)
+        {
+            StringBuilder sb = new StringBuilder();
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                string remainingText = text.Substring(i);
+
+                int emojiLength = Emoji.SearchEmoji(remainingText);
+
+                if (emojiLength > 0)
+                {
+                    sb.Append(remainingText.Substring(0, emojiLength));
+                    i += emojiLength - 1;
+                }
+                else
+                {
+                    sb.Append(URLEncode(remainingText.Substring(0, 1), isPath));
                 }
             }
 
@@ -239,7 +268,7 @@ namespace ShareX.HelpersLib
 
             if (useRegex)
             {
-                // https://gist.github.com/729294
+                // Source: https://gist.github.com/729294
                 string pattern =
                     "^" +
                     // protocol identifier
@@ -389,7 +418,12 @@ namespace ShareX.HelpersLib
 
         public static bool HasPrefix(string url)
         {
-            return URLPrefixes.Any(x => url.StartsWith(x, StringComparison.InvariantCultureIgnoreCase));
+            return URLPrefixes.Any(x => url.StartsWith(x, StringComparison.OrdinalIgnoreCase));
+        }
+
+        public static string GetPrefix(string url)
+        {
+            return URLPrefixes.FirstOrDefault(x => url.StartsWith(x, StringComparison.OrdinalIgnoreCase));
         }
 
         public static string FixPrefix(string url, string prefix = "http://")
@@ -416,7 +450,7 @@ namespace ShareX.HelpersLib
         {
             foreach (string prefix in URLPrefixes)
             {
-                if (url.StartsWith(prefix, StringComparison.InvariantCultureIgnoreCase))
+                if (url.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
                 {
                     url = url.Remove(0, prefix.Length);
                     break;
@@ -434,7 +468,7 @@ namespace ShareX.HelpersLib
 
                 if (!string.IsNullOrEmpty(host))
                 {
-                    if (host.StartsWith("www.", StringComparison.InvariantCultureIgnoreCase))
+                    if (host.StartsWith("www.", StringComparison.OrdinalIgnoreCase))
                     {
                         host = host.Substring(4);
                     }

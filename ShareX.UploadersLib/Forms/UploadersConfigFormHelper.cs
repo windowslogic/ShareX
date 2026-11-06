@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -173,8 +173,8 @@ namespace ShareX.UploadersLib
                         lblPhotobucketAccountStatus.Text = Resources.UploadersConfigForm_Login_successful;
                         txtPhotobucketDefaultAlbumName.Text = Config.PhotobucketAccountInfo.AlbumID;
                         Config.PhotobucketAccountInfo.AlbumList.Add(Config.PhotobucketAccountInfo.AlbumID);
-                        cboPhotobucketAlbumPaths.Items.Add(Config.PhotobucketAccountInfo.AlbumID);
-                        cboPhotobucketAlbumPaths.SelectedIndex = 0;
+                        cbPhotobucketAlbumPaths.Items.Add(Config.PhotobucketAccountInfo.AlbumID);
+                        cbPhotobucketAlbumPaths.SelectedIndex = 0;
                         MessageBox.Show(Resources.UploadersConfigForm_Login_successful, "ShareX", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
                     else
@@ -197,7 +197,7 @@ namespace ShareX.UploadersLib
             {
                 string albumPath = txtPhotobucketParentAlbumPath.Text + "/" + txtPhotobucketNewAlbumName.Text;
                 Config.PhotobucketAccountInfo.AlbumList.Add(albumPath);
-                cboPhotobucketAlbumPaths.Items.Add(albumPath);
+                cbPhotobucketAlbumPaths.Items.Add(albumPath);
                 MessageBox.Show(string.Format(Resources.UploadersConfigForm_PhotobucketCreateAlbum__0__successfully_created_, albumPath), "ShareX",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -268,7 +268,8 @@ namespace ShareX.UploadersLib
                 Prefix = Config.GoogleCloudStorageObjectPrefix,
                 RemoveExtensionImage = Config.GoogleCloudStorageRemoveExtensionImage,
                 RemoveExtensionText = Config.GoogleCloudStorageRemoveExtensionText,
-                RemoveExtensionVideo = Config.GoogleCloudStorageRemoveExtensionVideo
+                RemoveExtensionVideo = Config.GoogleCloudStorageRemoveExtensionVideo,
+                SetPublicACL = Config.GoogleCloudStorageSetPublicACL
             };
 
             lblGoogleCloudStoragePathPreview.Text = gcs.GetPreviewURL();
@@ -292,28 +293,21 @@ namespace ShareX.UploadersLib
 
         private void B2UpdateCustomDomainPreview()
         {
-            string uploadPath = NameParser.Parse(NameParserType.FolderPath, Config.B2UploadPath);
+            string uploadPath = NameParser.Parse(NameParserType.FilePath, Config.B2UploadPath);
+            string url;
 
             if (cbB2CustomUrl.Checked)
             {
-                string customUrl = NameParser.Parse(NameParserType.FolderPath, Config.B2CustomUrl);
-                if (URLHelpers.IsValidURL(customUrl))
-                {
-                    txtB2UrlPreview.Text = customUrl + uploadPath + "example.png";
-                }
-                else
-                {
-                    txtB2UrlPreview.Text = "invalid custom URL";
-                }
+                url = URLHelpers.CombineURL(Config.B2CustomUrl, uploadPath, "example.png");
+                url = URLHelpers.FixPrefix(url, "https://");
             }
             else
             {
-                string bucket = string.IsNullOrEmpty(Config.B2BucketName) ?
-                    "[bucket]" :
-                    URLHelpers.URLEncode(Config.B2BucketName);
-                string url = $"https://f001.backblazeb2.com/file/{bucket}/{uploadPath}example.png";
-                txtB2UrlPreview.Text = url;
+                string bucket = string.IsNullOrEmpty(Config.B2BucketName) ? "[bucket]" : URLHelpers.URLEncode(Config.B2BucketName);
+                url = URLHelpers.CombineURL("https://f001.backblazeb2.com/file", bucket, uploadPath, "example.png");
             }
+
+            lblB2UrlPreview.Text = url;
         }
 
         #endregion Backblaze B2
@@ -328,7 +322,7 @@ namespace ShareX.UploadersLib
 
                 if (OAuth2Info.CheckOAuth(Config.GoogleDriveOAuth2Info))
                 {
-                    List<GoogleDriveFile> folders = new GoogleDrive(Config.GoogleDriveOAuth2Info).GetFolders();
+                    List<GoogleDriveFile> folders = new GoogleDrive(Config.GoogleDriveOAuth2Info).GetFolders(Config.GoogleDriveSelectedDrive.id);
 
                     if (folders != null)
                     {
@@ -346,6 +340,42 @@ namespace ShareX.UploadersLib
             {
                 ex.ShowError();
             }
+        }
+
+        private void GoogleDriveRefreshDrives()
+        {
+            try
+            {
+                if (OAuth2Info.CheckOAuth(Config.GoogleDriveOAuth2Info))
+                {
+                    List<GoogleDriveSharedDrive> drives = new GoogleDrive(Config.GoogleDriveOAuth2Info).GetDrives();
+
+                    if (drives != null)
+                    {
+                        cbGoogleDriveSharedDrive.Items.Clear();
+                        cbGoogleDriveSharedDrive.Items.Add(GoogleDrive.MyDrive);
+
+                        foreach (GoogleDriveSharedDrive drive in drives)
+                        {
+                            cbGoogleDriveSharedDrive.Items.Add(drive);
+                        }
+                        GoogleDriveSelectConfigDrive();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                ex.ShowError();
+            }
+        }
+
+        private void GoogleDriveSelectConfigDrive()
+        {
+            string driveID = Config.GoogleDriveSelectedDrive?.id;
+            cbGoogleDriveSharedDrive.SelectedItem = cbGoogleDriveSharedDrive.Items
+                .OfType<GoogleDriveSharedDrive>()
+                .Where(x => x.id == driveID)
+                .FirstOrDefault();
         }
 
         #endregion Google Drive
@@ -469,10 +499,10 @@ namespace ShareX.UploadersLib
                     cbFTPFile.Items.Add(account);
                 }
 
-                cbFTPAccounts.SelectedIndex = selected.Between(0, Config.FTPAccountList.Count - 1);
-                cbFTPImage.SelectedIndex = Config.FTPSelectedImage.Between(0, Config.FTPAccountList.Count - 1);
-                cbFTPText.SelectedIndex = Config.FTPSelectedText.Between(0, Config.FTPAccountList.Count - 1);
-                cbFTPFile.SelectedIndex = Config.FTPSelectedFile.Between(0, Config.FTPAccountList.Count - 1);
+                cbFTPAccounts.SelectedIndex = selected.Clamp(0, Config.FTPAccountList.Count - 1);
+                cbFTPImage.SelectedIndex = Config.FTPSelectedImage.Clamp(0, Config.FTPAccountList.Count - 1);
+                cbFTPText.SelectedIndex = Config.FTPSelectedText.Clamp(0, Config.FTPAccountList.Count - 1);
+                cbFTPFile.SelectedIndex = Config.FTPSelectedFile.Clamp(0, Config.FTPAccountList.Count - 1);
             }
 
             FTPUpdateEnabledStates();
@@ -687,27 +717,6 @@ namespace ShareX.UploadersLib
 
         #endregion SendSpace
 
-        #region Ge.tt
-
-        public void Ge_ttLogin()
-        {
-            try
-            {
-                Ge_tt gett = new Ge_tt(APIKeys.Ge_ttKey);
-                Ge_ttLogin login = gett.Login(txtGe_ttEmail.Text, txtGe_ttPassword.Text);
-                Config.Ge_ttLogin = login;
-                lblGe_ttStatus.Text = Resources.UploadersConfigForm_Login_successful;
-            }
-            catch (Exception ex)
-            {
-                Config.Ge_ttLogin = null;
-                lblGe_ttStatus.Text = Resources.UploadersConfigForm_Login_failed;
-                ex.ShowError();
-            }
-        }
-
-        #endregion Ge.tt
-
         #region Pastebin
 
         public void PastebinLogin()
@@ -754,8 +763,8 @@ namespace ShareX.UploadersLib
 
         public void PushbulletGetDevices()
         {
-            cboPushbulletDevices.Items.Clear();
-            cboPushbulletDevices.ResetText();
+            cbPushbulletDevices.Items.Clear();
+            cbPushbulletDevices.ResetText();
 
             Pushbullet pushbullet = new Pushbullet(Config.PushbulletSettings);
             Config.PushbulletSettings.DeviceList = pushbullet.GetDeviceList();
@@ -764,14 +773,17 @@ namespace ShareX.UploadersLib
             {
                 Config.PushbulletSettings.SelectedDevice = 0;
 
-                cboPushbulletDevices.Enabled = true;
+                cbPushbulletDevices.Enabled = true;
 
                 Config.PushbulletSettings.DeviceList.ForEach(pbDevice =>
                 {
-                    cboPushbulletDevices.Items.Add(pbDevice.Name ?? Resources.UploadersConfigForm_LoadSettings_Invalid_device_name);
+                    if (!string.IsNullOrEmpty(pbDevice.Name))
+                    {
+                        cbPushbulletDevices.Items.Add(pbDevice.Name);
+                    }
                 });
 
-                cboPushbulletDevices.SelectedIndex = 0;
+                cbPushbulletDevices.SelectedIndex = 0;
             }
         }
 
@@ -962,24 +974,24 @@ namespace ShareX.UploadersLib
             int selected = lbSharedFolderAccounts.SelectedIndex;
 
             lbSharedFolderAccounts.Items.Clear();
-            cboSharedFolderImages.Items.Clear();
-            cboSharedFolderText.Items.Clear();
-            cboSharedFolderFiles.Items.Clear();
+            cbSharedFolderImages.Items.Clear();
+            cbSharedFolderText.Items.Clear();
+            cbSharedFolderFiles.Items.Clear();
 
             if (Config.LocalhostAccountList.Count > 0)
             {
                 foreach (LocalhostAccount account in Config.LocalhostAccountList)
                 {
                     lbSharedFolderAccounts.Items.Add(account);
-                    cboSharedFolderImages.Items.Add(account);
-                    cboSharedFolderText.Items.Add(account);
-                    cboSharedFolderFiles.Items.Add(account);
+                    cbSharedFolderImages.Items.Add(account);
+                    cbSharedFolderText.Items.Add(account);
+                    cbSharedFolderFiles.Items.Add(account);
                 }
 
-                lbSharedFolderAccounts.SelectedIndex = selected.Between(0, Config.LocalhostAccountList.Count - 1);
-                cboSharedFolderImages.SelectedIndex = Config.LocalhostSelectedImages.Between(0, Config.LocalhostAccountList.Count - 1);
-                cboSharedFolderText.SelectedIndex = Config.LocalhostSelectedText.Between(0, Config.LocalhostAccountList.Count - 1);
-                cboSharedFolderFiles.SelectedIndex = Config.LocalhostSelectedFiles.Between(0, Config.LocalhostAccountList.Count - 1);
+                lbSharedFolderAccounts.SelectedIndex = selected.Clamp(0, Config.LocalhostAccountList.Count - 1);
+                cbSharedFolderImages.SelectedIndex = Config.LocalhostSelectedImages.Clamp(0, Config.LocalhostAccountList.Count - 1);
+                cbSharedFolderText.SelectedIndex = Config.LocalhostSelectedText.Clamp(0, Config.LocalhostAccountList.Count - 1);
+                cbSharedFolderFiles.SelectedIndex = Config.LocalhostSelectedFiles.Clamp(0, Config.LocalhostAccountList.Count - 1);
             }
 
             SharedFolderUpdateEnabledStates();
@@ -987,7 +999,7 @@ namespace ShareX.UploadersLib
 
         private void SharedFolderUpdateEnabledStates()
         {
-            cboSharedFolderImages.Enabled = cboSharedFolderText.Enabled = cboSharedFolderFiles.Enabled = Config.LocalhostAccountList.Count > 0;
+            cbSharedFolderImages.Enabled = cbSharedFolderText.Enabled = cbSharedFolderFiles.Enabled = Config.LocalhostAccountList.Count > 0;
             btnSharedFolderRemove.Enabled = btnSharedFolderDuplicate.Enabled = lbSharedFolderAccounts.SelectedIndex > -1;
         }
 

@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -24,7 +24,6 @@
 #endregion License Information (GPL v3)
 
 using ShareX.HelpersLib;
-using ShareX.UploadersLib.Properties;
 using System;
 using System.IO;
 using System.Text;
@@ -113,7 +112,7 @@ namespace ShareX.UploadersLib.TextUploaders
                 byte[] bytes = Encoding.UTF8.GetBytes(text);
                 using (MemoryStream stream = new MemoryStream(bytes))
                 {
-                    result.Response = SendRequest(uploader.RequestMethod, uploader.GetRequestURL(input), stream, UploadHelpers.GetMimeType(fileName),
+                    result.Response = SendRequest(uploader.RequestMethod, uploader.GetRequestURL(input), stream, RequestHelpers.GetMimeType(fileName),
                         null, uploader.GetHeaders(input));
                 }
             }
@@ -122,14 +121,7 @@ namespace ShareX.UploadersLib.TextUploaders
                 throw new Exception("Unsupported request format: " + uploader.Body);
             }
 
-            try
-            {
-                uploader.ParseResponse(result, LastResponseInfo, input);
-            }
-            catch (Exception e)
-            {
-                Errors.Add(Resources.CustomFileUploader_Upload_Response_parse_failed_ + Environment.NewLine + e);
-            }
+            uploader.TryParseResponse(result, LastResponseInfo, input);
 
             return result;
         }

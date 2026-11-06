@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@
 #endregion License Information (GPL v3)
 
 using ShareX.HelpersLib;
+using ShareX.MediaLib.Properties;
 using System;
 using System.Drawing;
 using System.IO;
@@ -36,7 +37,7 @@ namespace ShareX.MediaLib
         public ImageThumbnailerForm()
         {
             InitializeComponent();
-            Icon = ShareXResources.Icon;
+            ShareXResources.ApplyTheme(this);
         }
 
         private void UpdateEnabled()
@@ -104,19 +105,14 @@ namespace ShareX.MediaLib
 
         private void lvImages_DragDrop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop, false))
+            if (e.Data.GetDataPresent(DataFormats.FileDrop, false) && e.Data.GetData(DataFormats.FileDrop, false) is string[] files)
             {
-                string[] files = e.Data.GetData(DataFormats.FileDrop, false) as string[];
-
-                if (files != null)
+                foreach (string file in files)
                 {
-                    foreach (string file in files)
-                    {
-                        AddFile(file);
-                    }
-
-                    UpdateEnabled();
+                    AddFile(file);
                 }
+
+                UpdateEnabled();
             }
         }
 
@@ -137,7 +133,7 @@ namespace ShareX.MediaLib
 
         private void btnOutputFolder_Click(object sender, EventArgs e)
         {
-            Helpers.BrowseFolder(txtOutputFolder);
+            FileHelpers.BrowseFolder(txtOutputFolder);
         }
 
         private void txtOutputFilename_TextChanged(object sender, EventArgs e)
@@ -153,7 +149,7 @@ namespace ShareX.MediaLib
                 int height = (int)nudHeight.Value;
                 int quality = (int)nudQuality.Value;
                 string outputFolder = txtOutputFolder.Text;
-                string outputFilename = txtOutputFilename.Text;
+                string outputFileName = txtOutputFilename.Text;
 
                 Cursor = Cursors.WaitCursor;
 
@@ -165,16 +161,20 @@ namespace ShareX.MediaLib
 
                         if (File.Exists(filePath))
                         {
-                            using (Image img = ImageHelpers.LoadImage(filePath))
+                            using (Bitmap bmp = ImageHelpers.LoadImage(filePath))
                             {
-                                if (img != null)
+                                if (bmp != null)
                                 {
-                                    using (Image thumbnail = ImageHelpers.CreateThumbnail(img, width, height))
+                                    using (Bitmap thumbnail = ImageHelpers.CreateThumbnail(bmp, width, height))
                                     {
-                                        string filename = Path.GetFileNameWithoutExtension(filePath);
-                                        string outputPath = Path.Combine(outputFolder, outputFilename.Replace("$filename", filename));
+                                        string fileName = Path.GetFileNameWithoutExtension(filePath);
+                                        string outputPath = Path.Combine(outputFolder, outputFileName.Replace("$filename", fileName));
                                         outputPath = Path.ChangeExtension(outputPath, "jpg");
-                                        thumbnail.SaveJPG(outputPath, quality);
+
+                                        using (Bitmap newImage = ImageHelpers.FillBackground(thumbnail, Color.White))
+                                        {
+                                            ImageHelpers.SaveJPEG(newImage, outputPath, quality);
+                                        }
                                     }
                                 }
                             }
@@ -182,8 +182,7 @@ namespace ShareX.MediaLib
                     }
 
                     Cursor = Cursors.Default;
-                    // TODO: Translate
-                    MessageBox.Show("Thumbnails successfully generated.", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show(Resources.ThumbnailsSuccessfullyGenerated, Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 catch (Exception ex)
                 {

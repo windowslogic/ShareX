@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2019 ShareX Team
+    Copyright (c) 2007-2022 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -30,7 +30,9 @@ namespace ShareX
 {
     public class UploadInfoStatus
     {
-        public TaskInfo Info { get; private set; }
+        public WorkerTask Task { get; private set; }
+
+        public TaskInfo Info => Task.Info;
 
         public bool IsURLExist { get; private set; }
         public bool IsShortenedURLExist { get; private set; }
@@ -46,9 +48,9 @@ namespace ShareX
         public bool IsImageFile { get; private set; }
         public bool IsTextFile { get; private set; }
 
-        public UploadInfoStatus(TaskInfo info)
+        public UploadInfoStatus(WorkerTask task)
         {
-            Info = info;
+            Task = task;
             Update();
         }
 
@@ -61,16 +63,16 @@ namespace ShareX
                 IsThumbnailURLExist = !string.IsNullOrEmpty(Info.Result.ThumbnailURL);
                 IsDeletionURLExist = !string.IsNullOrEmpty(Info.Result.DeletionURL);
                 IsFileURL = IsURLExist && URLHelpers.IsFileURL(Info.Result.URL);
-                IsImageURL = IsFileURL && Helpers.IsImageFile(Info.Result.URL);
-                IsTextURL = IsFileURL && Helpers.IsTextFile(Info.Result.URL);
+                IsImageURL = IsFileURL && FileHelpers.IsImageFile(Info.Result.URL);
+                IsTextURL = IsFileURL && FileHelpers.IsTextFile(Info.Result.URL);
             }
 
             IsFilePathValid = !string.IsNullOrEmpty(Info.FilePath) && Path.HasExtension(Info.FilePath);
             IsFileExist = IsFilePathValid && File.Exists(Info.FilePath);
             IsThumbnailFilePathValid = !string.IsNullOrEmpty(Info.ThumbnailFilePath) && Path.HasExtension(Info.ThumbnailFilePath);
             IsThumbnailFileExist = IsThumbnailFilePathValid && File.Exists(Info.ThumbnailFilePath);
-            IsImageFile = IsFileExist && Helpers.IsImageFile(Info.FilePath);
-            IsTextFile = IsFileExist && Helpers.IsTextFile(Info.FilePath);
+            IsImageFile = IsFileExist && FileHelpers.IsImageFile(Info.FilePath);
+            IsTextFile = IsFileExist && FileHelpers.IsTextFile(Info.FilePath);
         }
     }
 }
