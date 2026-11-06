@@ -27,12 +27,12 @@ namespace ShareX.HelpersLib
 {
     public static class Links
     {
-        public const string URL_WEBSITE = "https://getsharex.com";
-        public const string URL_PROJECT = "https://github.com/ShareX/ShareX";
+        public const string URL_WEBSITE = "";
+        public const string URL_PROJECT = "https://github.com/windowslogic/ShareX";
         public const string URL_ISSUES = URL_PROJECT + "/issues?q=is%3Aissue";
-        public const string URL_CALLBACK = URL_WEBSITE + "/callback/";
-        public const string URL_CHANGELOG = URL_WEBSITE + "/changelog";
-        public const string URL_DONATE = URL_WEBSITE + "/donate";
+        public const string URL_CALLBACK = URL_WEBSITE + "";
+        public const string URL_CHANGELOG = URL_WEBSITE + "";
+        public const string URL_DONATE = URL_WEBSITE + "";
         public const string URL_BERK = "https://github.com/Jaex";
         public const string URL_MIKE = "https://github.com/McoreD";
         public const string URL_STEAM = "http://store.steampowered.com/app/400040/";

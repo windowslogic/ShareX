@@ -44,11 +44,9 @@
             this.lblTeam = new System.Windows.Forms.Label();
             this.pbLogo = new System.Windows.Forms.PictureBox();
             this.btnClose = new System.Windows.Forms.Button();
-            this.btnShareXLicense = new System.Windows.Forms.Button();
-            this.btnLicenses = new System.Windows.Forms.Button();
-            this.uclUpdate = new ShareX.HelpersLib.UpdateCheckerLabel();
-            this.cLogo = new ShareX.HelpersLib.Canvas();
             this.lblBuild = new System.Windows.Forms.Label();
+            this.lnkUpdate = new System.Windows.Forms.LinkLabel();
+            this.cLogo = new ShareX.HelpersLib.Canvas();
             ((System.ComponentModel.ISupportInitialize)(this.pbMikeURL)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbAU)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pbBerkURL)).BeginInit();
@@ -149,24 +147,17 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // btnShareXLicense
+            // lblBuild
             // 
-            resources.ApplyResources(this.btnShareXLicense, "btnShareXLicense");
-            this.btnShareXLicense.Name = "btnShareXLicense";
-            this.btnShareXLicense.UseVisualStyleBackColor = true;
-            this.btnShareXLicense.Click += new System.EventHandler(this.btnShareXLicense_Click);
+            resources.ApplyResources(this.lblBuild, "lblBuild");
+            this.lblBuild.Name = "lblBuild";
             // 
-            // btnLicenses
+            // lnkUpdate
             // 
-            resources.ApplyResources(this.btnLicenses, "btnLicenses");
-            this.btnLicenses.Name = "btnLicenses";
-            this.btnLicenses.UseVisualStyleBackColor = true;
-            this.btnLicenses.Click += new System.EventHandler(this.btnLicenses_Click);
-            // 
-            // uclUpdate
-            // 
-            resources.ApplyResources(this.uclUpdate, "uclUpdate");
-            this.uclUpdate.Name = "uclUpdate";
+            resources.ApplyResources(this.lnkUpdate, "lnkUpdate");
+            this.lnkUpdate.Name = "lnkUpdate";
+            this.lnkUpdate.TabStop = true;
+            this.lnkUpdate.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkUpdate_LinkClicked);
             // 
             // cLogo
             // 
@@ -174,20 +165,15 @@
             this.cLogo.Interval = 100;
             this.cLogo.Name = "cLogo";
             // 
-            // lblBuild
-            // 
-            resources.ApplyResources(this.lblBuild, "lblBuild");
-            this.lblBuild.Name = "lblBuild";
-            // 
             // AboutForm
             // 
+            this.AcceptButton = this.btnClose;
             resources.ApplyResources(this, "$this");
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.Window;
             this.CancelButton = this.btnClose;
             this.Controls.Add(this.lblBuild);
-            this.Controls.Add(this.btnLicenses);
-            this.Controls.Add(this.btnShareXLicense);
+            this.Controls.Add(this.lnkUpdate);
             this.Controls.Add(this.btnClose);
             this.Controls.Add(this.pbLogo);
             this.Controls.Add(this.lblTeam);
@@ -195,7 +181,6 @@
             this.Controls.Add(this.rtbCredits);
             this.Controls.Add(this.lblBerk);
             this.Controls.Add(this.lblMike);
-            this.Controls.Add(this.uclUpdate);
             this.Controls.Add(this.pbMikeURL);
             this.Controls.Add(this.pbAU);
             this.Controls.Add(this.pbBerkURL);
@@ -228,12 +213,10 @@
         private HelpersLib.Canvas cLogo;
         private System.Windows.Forms.RichTextBox rtbCredits;
         private System.Windows.Forms.RichTextBox rtbShareXInfo;
-        private HelpersLib.UpdateCheckerLabel uclUpdate;
         private System.Windows.Forms.Label lblTeam;
         private System.Windows.Forms.PictureBox pbLogo;
         private System.Windows.Forms.Button btnClose;
-        private System.Windows.Forms.Button btnShareXLicense;
-        private System.Windows.Forms.Button btnLicenses;
         private System.Windows.Forms.Label lblBuild;
+        private System.Windows.Forms.LinkLabel lnkUpdate;
     }
 }

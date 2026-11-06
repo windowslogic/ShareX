@@ -27,6 +27,7 @@ using ShareX.HelpersLib;
 using ShareX.Properties;
 using System;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace ShareX
 {
@@ -44,37 +45,12 @@ namespace ShareX
             rtbShareXInfo.AddContextMenu();
             rtbCredits.AddContextMenu();
 
-#if STEAM || WindowsStore
-            uclUpdate.Visible = false;
-            lblBuild.Visible = true;
-
-            if (Program.Build == ShareXBuild.Steam)
-            {
-                lblBuild.Text = "Steam build";
-            }
-            else if (Program.Build == ShareXBuild.MicrosoftStore)
-            {
-                lblBuild.Text = "Microsoft Store build";
-            }
-#else
-            if (!Program.PortableApps)
-            {
-                UpdateChecker updateChecker = Program.UpdateManager.CreateUpdateChecker();
-                uclUpdate.CheckUpdate(updateChecker);
-            }
-            else
-            {
-                uclUpdate.Visible = false;
-            }
-#endif
-
-            lblTeam.Text = "ShareX Team:";
+            lblTeam.Text = "Old ShareX 12.x Team Members:";
             lblBerk.Text = "Jaex (Berk)";
             lblMike.Text = "McoreD (Michael Delpach)";
 
-            rtbShareXInfo.Text = $@"{Resources.AboutForm_AboutForm_Website}: {Links.URL_WEBSITE}
-{Resources.AboutForm_AboutForm_Project_page}: {Links.URL_PROJECT}
-{Resources.AboutForm_AboutForm_Changelog}: {Links.URL_CHANGELOG}";
+            rtbShareXInfo.Text = $@"
+{Resources.AboutForm_AboutForm_Project_page}: {Links.URL_PROJECT}";
 
             rtbCredits.Text = $@"{Resources.AboutForm_AboutForm_Contributors}:
 
@@ -115,7 +91,7 @@ ZXing.Net: https://github.com/micjahn/ZXing.Net
 MegaApiClient: https://github.com/gpailler/MegaApiClient
 Blob Emoji: http://blobs.gg
 
-Copyright (c) 2007-2019 ShareX Team";
+Copyright © 2007-2019 ShareX Team, Copyright © 2026 WindowsLogic Productions.";
 
             easterEgg = new EasterEggAboutAnimation(cLogo, this);
         }
@@ -151,19 +127,14 @@ Copyright (c) 2007-2019 ShareX Team";
             URLHelpers.OpenURL(e.LinkText);
         }
 
-        private void btnShareXLicense_Click(object sender, EventArgs e)
-        {
-            Helpers.OpenFile(Helpers.GetAbsolutePath("Licenses\\ShareX_license.txt"));
-        }
-
-        private void btnLicenses_Click(object sender, EventArgs e)
-        {
-            Helpers.OpenFolder(Helpers.GetAbsolutePath("Licenses"));
-        }
-
         private void btnClose_Click(object sender, EventArgs e)
         {
             Close();
+        }
+
+        private void lnkUpdate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            Process.Start("https://github.com/windowslogic/sharex/releases");
         }
     }
 }
