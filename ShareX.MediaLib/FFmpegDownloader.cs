@@ -38,11 +38,12 @@ namespace ShareX.MediaLib
 
             if (NativeMethods.Is64Bit())
             {
-                url = "https://ffmpeg.zeranoe.com/builds/win64/static/ffmpeg-latest-win64-static.zip";
+                url = "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip";
             }
             else
             {
-                url = "https://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.zip";
+                MessageBox.Show("FFmpeg support for 32-bit operating systems is no longer supported. If the downloader form appears, press Cancel.");
+                url = "";
             }
 
             using (DownloaderForm form = new DownloaderForm(url, "ffmpeg.zip"))
