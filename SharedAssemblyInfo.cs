@@ -28,7 +28,7 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyCompany("ShareX Team")]
 [assembly: AssemblyProduct("ShareX")]
-[assembly: AssemblyCopyright("Copyright (c) 2007-2019 ShareX Team")]
+[assembly: AssemblyCopyright("Copyright © 2007-2019 ShareX Team, Copyright © 2026 WindowsLogic Productions")]
 [assembly: ComVisible(false)]
-[assembly: AssemblyVersion("12.5.0")]
-[assembly: AssemblyFileVersion("12.5.0")]
+[assembly: AssemblyVersion("12.5.1")]
+[assembly: AssemblyFileVersion("12.5.1")]

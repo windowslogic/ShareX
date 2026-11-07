@@ -173,9 +173,9 @@ namespace ShareX
 #if STEAM || MicrosoftStore
         [Browsable(false)]
 #endif
-        public bool AutoCheckUpdate { get; set; }
+        //public bool AutoCheckUpdate { get; set; }
 
-        [Category("Application"), DefaultValue(false), Description("Calculate and show file sizes in binary units (KiB, MiB etc.)")]
+        //[Category("Application"), DefaultValue(false), Description("Calculate and show file sizes in binary units (KiB, MiB etc.)")]
         public bool BinaryUnits { get; set; }
 
         [Category("Application"), DefaultValue(false), Description("Show most recent task first in main window.")]
