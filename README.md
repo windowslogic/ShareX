@@ -1,6 +1,6 @@
 # ShareX 12.x
 
-A fork of ShareX 12.x as the newer versions are made with AI.
+A fork of ShareX 12.x as the newer versions are made with AI. Feature set is in-line with version 14 currently.
 
 Code in this repository is Copyright © 2019 ShareX Team.
 
