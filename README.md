@@ -1,8 +1,8 @@
 # ShareX 12.x
 
-A fork of ShareX 12.x as the newer versions are made with AI. Feature set is in-line with version 14 currently.
+A fork of ShareX 12.x as the newer versions are made with AI. Feature set is in-line with version 19 currently therefore requires .NET 9.0 and Visual Studio 2026.
 
-Code in this repository is Copyright © 2019 ShareX Team.
+Code in this repository is Copyright © 2007 - 2026 ShareX Team.
 
 All new code is Copyright © 2026 WindowsLogic Productions. All rights reserved.
 
