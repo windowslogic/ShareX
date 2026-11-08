@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2022 ShareX Team
+    Copyright (c) 2007-2026 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -23,7 +23,7 @@
 
 #endregion License Information (GPL v3)
 
-using Newtonsoft.Json;
+using ShareX.HelpersLib;
 using System;
 using System.ComponentModel;
 
@@ -42,9 +42,18 @@ namespace ShareX
         Unknown
     }
 
+    public enum UpdateChannel // Localized
+    {
+        Release,
+        PreRelease,
+        Dev
+    }
+
     public enum SupportedLanguage
     {
         Automatic, // Localized
+        [Description("العربية (Arabic)")]
+        Arabic,
         [Description("Nederlands (Dutch)")]
         Dutch,
         [Description("English")]
@@ -53,6 +62,8 @@ namespace ShareX
         French,
         [Description("Deutsch (German)")]
         German,
+        [Description("עִברִית (Hebrew)")]
+        Hebrew,
         [Description("Magyar (Hungarian)")]
         Hungarian,
         [Description("Bahasa Indonesia (Indonesian)")]
@@ -121,22 +132,25 @@ namespace ShareX
         None = 0,
         ShowQuickTaskMenu = 1,
         ShowAfterCaptureWindow = 1 << 1,
-        AddImageEffects = 1 << 2,
-        AnnotateImage = 1 << 3,
-        CopyImageToClipboard = 1 << 4,
-        SendImageToPrinter = 1 << 5,
-        SaveImageToFile = 1 << 6,
-        SaveImageToFileWithDialog = 1 << 7,
-        SaveThumbnailImageToFile = 1 << 8,
-        PerformActions = 1 << 9,
-        CopyFileToClipboard = 1 << 10,
-        CopyFilePathToClipboard = 1 << 11,
-        ShowInExplorer = 1 << 12,
-        ScanQRCode = 1 << 13,
-        DoOCR = 1 << 14,
-        ShowBeforeUploadWindow = 1 << 15,
-        UploadImageToHost = 1 << 16,
-        DeleteFile = 1 << 17
+        BeautifyImage = 1 << 2,
+        AddImageEffects = 1 << 3,
+        AnnotateImage = 1 << 4,
+        CopyImageToClipboard = 1 << 5,
+        PinToScreen = 1 << 6,
+        SendImageToPrinter = 1 << 7,
+        SaveImageToFile = 1 << 8,
+        SaveImageToFileWithDialog = 1 << 9,
+        SaveThumbnailImageToFile = 1 << 10,
+        PerformActions = 1 << 11,
+        CopyFileToClipboard = 1 << 12,
+        CopyFilePathToClipboard = 1 << 13,
+        ShowInExplorer = 1 << 14,
+        AnalyzeImage = 1 << 15,
+        ScanQRCode = 1 << 16,
+        DoOCR = 1 << 17,
+        ShowBeforeUploadWindow = 1 << 18,
+        UploadImageToHost = 1 << 19,
+        DeleteFile = 1 << 20
     }
 
     [Flags]
@@ -171,82 +185,160 @@ namespace ShareX
         LastRegion
     }
 
-    [JsonConverter(typeof(HotkeyTypeEnumConverter))]
-    public enum HotkeyType // Localized + Category
+    public enum HotkeyType // Localized
     {
         None,
         // Upload
+        [Category(EnumExtensions.HotkeyType_Category_Upload)]
         FileUpload,
+        [Category(EnumExtensions.HotkeyType_Category_Upload)]
         FolderUpload,
+        [Category(EnumExtensions.HotkeyType_Category_Upload)]
         ClipboardUpload,
+        [Category(EnumExtensions.HotkeyType_Category_Upload)]
         ClipboardUploadWithContentViewer,
+        [Category(EnumExtensions.HotkeyType_Category_Upload)]
         UploadText,
+        [Category(EnumExtensions.HotkeyType_Category_Upload)]
         UploadURL,
+        [Category(EnumExtensions.HotkeyType_Category_Upload)]
         DragDropUpload,
+        [Category(EnumExtensions.HotkeyType_Category_Upload)]
         ShortenURL,
-        TweetMessage,
+        [Category(EnumExtensions.HotkeyType_Category_Upload)]
         StopUploads,
         // Screen capture
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
         PrintScreen,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
         ActiveWindow,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
+        CustomWindow,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
         ActiveMonitor,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
         RectangleRegion,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
         RectangleLight,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
         RectangleTransparent,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
         CustomRegion,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
         LastRegion,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
         ScrollingCapture,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
         AutoCapture,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
         StartAutoCapture,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenCapture)]
+        StopAutoCapture,
         // Screen record
+        [Category(EnumExtensions.HotkeyType_Category_ScreenRecord)]
         ScreenRecorder,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenRecord)]
         ScreenRecorderActiveWindow,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenRecord)]
         ScreenRecorderCustomRegion,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenRecord)]
         StartScreenRecorder,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenRecord)]
         ScreenRecorderGIF,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenRecord)]
         ScreenRecorderGIFActiveWindow,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenRecord)]
         ScreenRecorderGIFCustomRegion,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenRecord)]
         StartScreenRecorderGIF,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenRecord)]
         StopScreenRecording,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenRecord)]
+        PauseScreenRecording,
+        [Category(EnumExtensions.HotkeyType_Category_ScreenRecord)]
         AbortScreenRecording,
         // Tools
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         ColorPicker,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         ScreenColorPicker,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         Ruler,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        PinToScreen,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        PinToScreenFromScreen,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        PinToScreenFromClipboard,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        PinToScreenFromFile,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        PinToScreenCloseAll,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         ImageEditor,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        ImageBeautifier,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         ImageEffects,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         ImageViewer,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         ImageCombiner,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         ImageSplitter,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         ImageThumbnailer,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         VideoConverter,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         VideoThumbnailer,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        AnalyzeImage,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         OCR,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         QRCode,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         QRCodeDecodeFromScreen,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        QRCodeScanRegion,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         HashCheck,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        Metadata,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        StripMetadata,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         IndexFolder,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         ClipboardViewer,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         BorderlessWindow,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        ActiveWindowBorderless,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
+        ActiveWindowTopMost,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         InspectWindow,
+        [Category(EnumExtensions.HotkeyType_Category_Tools)]
         MonitorTest,
-        DNSChanger,
         // Other
+        [Category(EnumExtensions.HotkeyType_Category_Other)]
         DisableHotkeys,
+        [Category(EnumExtensions.HotkeyType_Category_Other)]
         OpenMainWindow,
+        [Category(EnumExtensions.HotkeyType_Category_Other)]
         OpenScreenshotsFolder,
+        [Category(EnumExtensions.HotkeyType_Category_Other)]
         OpenHistory,
+        [Category(EnumExtensions.HotkeyType_Category_Other)]
         OpenImageHistory,
+        [Category(EnumExtensions.HotkeyType_Category_Other)]
         ToggleActionsToolbar,
+        [Category(EnumExtensions.HotkeyType_Category_Other)]
         ToggleTrayMenu,
+        [Category(EnumExtensions.HotkeyType_Category_Other)]
         ExitShareX
-    }
-
-    public enum PopUpNotificationType // Localized
-    {
-        None,
-        BalloonTip,
-        ToastNotification
     }
 
     public enum ToastClickAction // Localized
@@ -260,7 +352,9 @@ namespace ShareX
         OpenFile,
         OpenFolder,
         OpenUrl,
-        Upload
+        Upload,
+        PinToScreen,
+        DeleteFile
     }
 
     public enum ThumbnailViewClickAction // Localized
@@ -302,6 +396,12 @@ namespace ShareX
         Default, Light, Transparent
     }
 
+    public enum ScreenTearingTestMode
+    {
+        VerticalLines,
+        HorizontalLines
+    }
+
 #if !MicrosoftStore
     public enum StartupState
     {
@@ -333,5 +433,23 @@ namespace ShareX
     {
         ListView,
         ThumbnailView
+    }
+
+    public enum NativeMessagingAction
+    {
+        None,
+        UploadImage,
+        UploadVideo,
+        UploadAudio,
+        UploadText,
+        ShortenURL
+    }
+
+    public enum NotificationSound
+    {
+        Capture,
+        TaskCompleted,
+        ActionCompleted,
+        Error
     }
 }

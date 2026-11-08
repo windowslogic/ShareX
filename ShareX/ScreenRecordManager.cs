@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2022 ShareX Team
+    Copyright (c) 2007-2026 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -24,6 +24,7 @@
 #endregion License Information (GPL v3)
 
 using ShareX.HelpersLib;
+using ShareX.MediaLib;
 using ShareX.Properties;
 using ShareX.ScreenCaptureLib;
 using System;
@@ -61,6 +62,14 @@ namespace ShareX
             if (IsRecording && screenRecorder != null)
             {
                 screenRecorder.StopRecording();
+            }
+        }
+
+        public static void PauseScreenRecording()
+        {
+            if (IsRecording && recordForm != null && !recordForm.IsDisposed)
+            {
+                recordForm.PauseResumeRecording();
             }
         }
 
@@ -128,6 +137,7 @@ namespace ShareX
                     else
                     {
                         RegionCaptureTasks.GetRectangleRegion(out captureRectangle, out WindowInfo windowInfo, taskSettings.CaptureSettings.SurfaceOptions);
+
                         metadata.UpdateInfo(windowInfo);
                     }
                     break;
@@ -140,6 +150,10 @@ namespace ShareX
                     {
                         captureRectangle = CaptureHelpers.GetActiveWindowRectangle();
                     }
+
+                    IntPtr handle = NativeMethods.GetForegroundWindow();
+                    WindowInfo activeWindowInfo = new WindowInfo(handle);
+                    metadata.UpdateInfo(activeWindowInfo);
                     break;
                 case ScreenRecordStartMethod.CustomRegion:
                     captureRectangle = taskSettings.CaptureSettings.CaptureCustomRegion;
@@ -167,6 +181,8 @@ namespace ShareX
             IsRecording = true;
 
             string path = "";
+            string concatPath = "";
+            string tempPath = "";
             bool abortRequested = false;
 
             float duration = taskSettings.CaptureSettings.ScreenRecordFixedDuration ? taskSettings.CaptureSettings.ScreenRecordDuration : 0;
@@ -202,12 +218,23 @@ namespace ShareX
                     {
                         abortRequested = true;
                     }
+                    else
+                    {
+                        concatPath = FileHelpers.AppendTextToFileName(path, "-concat");
+                        FileHelpers.DeleteFile(concatPath);
+                        tempPath = FileHelpers.AppendTextToFileName(path, "-temp");
+                        FileHelpers.DeleteFile(tempPath);
+                    }
 
-                    if (!abortRequested)
+                    while (!abortRequested && (recordForm.Status == ScreenRecordingStatus.Waiting || recordForm.Status == ScreenRecordingStatus.Paused))
                     {
                         recordForm.ChangeState(ScreenRecordState.BeforeStart);
 
-                        if (taskSettings.CaptureSettings.ScreenRecordAutoStart)
+                        if (recordForm.Status == ScreenRecordingStatus.Paused || !taskSettings.CaptureSettings.ScreenRecordAutoStart)
+                        {
+                            recordForm.RecordResetEvent.WaitOne();
+                        }
+                        else
                         {
                             int delay = (int)(taskSettings.CaptureSettings.ScreenRecordStartDelay * 1000);
 
@@ -218,18 +245,23 @@ namespace ShareX
                                 recordForm.RecordResetEvent.WaitOne(delay);
                             }
                         }
-                        else
-                        {
-                            recordForm.RecordResetEvent.WaitOne();
-                        }
 
-                        if (recordForm.IsAbortRequested)
+                        if (recordForm.Status == ScreenRecordingStatus.Aborted)
                         {
                             abortRequested = true;
                         }
 
-                        if (!abortRequested)
+                        if (recordForm.Status == ScreenRecordingStatus.Waiting || recordForm.Status == ScreenRecordingStatus.Paused)
                         {
+                            if (recordForm.Status == ScreenRecordingStatus.Paused && File.Exists(path))
+                            {
+                                FileHelpers.RenameFile(path, concatPath);
+                            }
+
+                            recordForm.ChangeState(ScreenRecordState.AfterStart);
+
+                            captureRectangle = recordForm.RecordingRegion;
+
                             ScreenRecordingOptions options = new ScreenRecordingOptions()
                             {
                                 IsRecording = true,
@@ -245,15 +277,28 @@ namespace ShareX
                             Screenshot screenshot = TaskHelpers.GetScreenshot(taskSettings);
                             screenshot.CaptureCursor = taskSettings.CaptureSettings.ScreenRecordShowCursor;
 
+                            screenRecorder?.Dispose();
                             screenRecorder = new ScreenRecorder(ScreenRecordOutput.FFmpeg, options, screenshot, captureRectangle);
                             screenRecorder.RecordingStarted += ScreenRecorder_RecordingStarted;
                             screenRecorder.EncodingProgressChanged += ScreenRecorder_EncodingProgressChanged;
-                            recordForm.ChangeState(ScreenRecordState.AfterStart);
                             screenRecorder.StartRecording();
+                            recordForm.ChangeState(ScreenRecordState.RecordingEnd);
 
-                            if (recordForm.IsAbortRequested)
+                            if (recordForm.Status == ScreenRecordingStatus.Aborted)
                             {
                                 abortRequested = true;
+                            }
+                        }
+
+                        TaskHelpers.PlayNotificationSoundAsync(NotificationSound.ActionCompleted, taskSettings);
+
+                        if (File.Exists(concatPath))
+                        {
+                            using (FFmpegCLIManager ffmpeg = new FFmpegCLIManager(taskSettings.CaptureSettings.FFmpegOptions.FFmpegPath))
+                            {
+                                ffmpeg.ShowError = true;
+                                ffmpeg.ConcatenateVideos(new string[] { concatPath, path }, tempPath, true);
+                                FileHelpers.RenameFile(tempPath, path);
                             }
                         }
                     }
@@ -284,12 +329,15 @@ namespace ShareX
                 {
                     screenRecorder.Dispose();
                     screenRecorder = null;
-
-                    if (abortRequested && !string.IsNullOrEmpty(path) && File.Exists(path))
-                    {
-                        File.Delete(path);
-                    }
                 }
+
+                if (abortRequested)
+                {
+                    FileHelpers.DeleteFile(path);
+                }
+
+                FileHelpers.DeleteFile(concatPath);
+                FileHelpers.DeleteFile(tempPath);
             }).ContinueInCurrentContext(() =>
             {
                 if (!abortRequested && !string.IsNullOrEmpty(path) && File.Exists(path) && TaskHelpers.ShowAfterCaptureForm(taskSettings, out string customFileName, null, path))
@@ -299,7 +347,7 @@ namespace ShareX
                         string currentFileName = Path.GetFileNameWithoutExtension(path);
                         string ext = Path.GetExtension(path);
 
-                        if (!currentFileName.Equals(customFileName, StringComparison.InvariantCultureIgnoreCase))
+                        if (!currentFileName.Equals(customFileName, StringComparison.OrdinalIgnoreCase))
                         {
                             path = FileHelpers.RenameFile(path, customFileName + ext);
                         }
@@ -343,7 +391,7 @@ namespace ShareX
             }
             finally
             {
-                if (deleteInputFile && !input.Equals(output, StringComparison.InvariantCultureIgnoreCase) && File.Exists(input))
+                if (deleteInputFile && !input.Equals(output, StringComparison.OrdinalIgnoreCase) && File.Exists(input))
                 {
                     File.Delete(input);
                 }

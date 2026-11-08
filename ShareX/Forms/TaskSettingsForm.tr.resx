@@ -468,9 +468,6 @@
   <data name="cbRegionCaptureDetectWindows.Text" xml:space="preserve">
     <value>Pencere alanlarını tespit edip imleç ile yakalamaya izin ver</value>
   </data>
-  <data name="cbRegionCaptureUseDimming.Text" xml:space="preserve">
-    <value>Arkaplanı karart böylece seçim bölgesi daha kolay ayırt edilebilir (başlangıç hızını etkiler)</value>
-  </data>
   <data name="lblRegionCaptureSnapSizes.Text" xml:space="preserve">
     <value>"Alt" tuşuna basılı tutulduğunda bölgeyi bu boyutlara kitle:</value>
   </data>
@@ -498,17 +495,11 @@
   <data name="cbCaptureOCRAutoCopy.Text" xml:space="preserve">
     <value>Sonuçları otomatik olarak panoya kopyala</value>
   </data>
-  <data name="cbCaptureOCRProcessOnLoad.Text" xml:space="preserve">
-    <value>Pencere açıldığında OCR uygula</value>
-  </data>
   <data name="cbCaptureOCRSilent.Text" xml:space="preserve">
     <value>Sessizce OCR uygula</value>
   </data>
   <data name="cbClipboardUploadURLContents.Text" xml:space="preserve">
     <value>Eğer pano dosya linki içeriyorsa indirip karşıya yükle</value>
-  </data>
-  <data name="cbDisableNotifications.Text" xml:space="preserve">
-    <value>Uyarıları devre dışı bırak</value>
   </data>
   <data name="cbDisableNotificationsOnFullscreen.Text" xml:space="preserve">
     <value>Tam ekran ise uyarıları devre dışı bırak</value>
@@ -632,5 +623,41 @@
   </data>
   <data name="cbOverrideFTPAccount.Text" xml:space="preserve">
     <value>Varsayılan FTP hesabını değiştir</value>
+  </data>
+  <data name="lblRegionCaptureFPSLimit.Text" xml:space="preserve">
+    <value>FPS limiti:</value>
+  </data>
+  <data name="lblTask.Text" xml:space="preserve">
+    <value>Görev:</value>
+  </data>
+  <data name="tpOCR.Text" xml:space="preserve">
+    <value>OCR</value>
+  </data>
+  <data name="cbToastWindowAutoHide.Text" xml:space="preserve">
+    <value>Ekran görüntüsü alırken otomatik olarak sakla</value>
+  </data>
+  <data name="cbRegionCaptureActiveMonitorMode.Text" xml:space="preserve">
+    <value>Bölge yakalama ve imleci aktif ekran alanına limitle</value>
+  </data>
+  <data name="cbCaptureAutoHideDesktopIcons.Text" xml:space="preserve">
+    <value>Masaüstü simgelerini otomatik gizle</value>
+  </data>
+  <data name="cbCloseWindowAfterOpenServiceLink.Text" xml:space="preserve">
+    <value>Servis bağlantısı açıldıktan sonra OCR penceresini kapat</value>
+  </data>
+  <data name="cbPlaySoundAfterAction.Text" xml:space="preserve">
+    <value>İşlem tamamlandıktan sonra ses çal</value>
+  </data>
+  <data name="cbUseCustomActionCompletedSound.Text" xml:space="preserve">
+    <value>Kişisel işlem tamamlandı sesi kullan:</value>
+  </data>
+  <data name="cbUseRandomImageEffect.Text" xml:space="preserve">
+    <value>Rastgele resim efekti kullan</value>
+  </data>
+  <data name="lblCaptureCustomWindow.Text" xml:space="preserve">
+    <value>Önceden yapılandırılmış pencere başlığı:</value>
+  </data>
+  <data name="lblRegionCaptureBackgroundDimStrength.Text" xml:space="preserve">
+    <value>Arka plan karartma yoğunluğu:</value>
   </data>
 </root>

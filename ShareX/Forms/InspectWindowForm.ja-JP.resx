@@ -124,9 +124,18 @@
     <value>ShareX - ウィンドウの調査</value>
   </data>
   <data name="btnInspectWindow.Text" xml:space="preserve">
-    <value>ウィンドウを調べる</value>
+    <value>ウィンドウを調べる...</value>
   </data>
   <data name="btnInspectControl.Text" xml:space="preserve">
-    <value>コントロールを調べる</value>
+    <value>コントロールを調べる...</value>
+  </data>
+  <data name="mbWindowList.Text" xml:space="preserve">
+    <value>ウィンドウ一覧</value>
+  </data>
+  <data name="cbTopMost.Text" xml:space="preserve">
+    <value>常に手前に表示</value>
+  </data>
+  <data name="lblOpacity.Text" xml:space="preserve">
+    <value>不透過度:</value>
   </data>
 </root>

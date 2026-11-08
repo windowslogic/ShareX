@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2022 ShareX Team
+    Copyright (c) 2007-2026 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -60,7 +60,7 @@ namespace ShareX.ScreenCaptureLib
             }
         }
 
-        private List<PointF> positions = new List<PointF>();
+        protected List<PointF> positions = new List<PointF>();
         private bool isPolygonMode;
 
         public override void ShowNodes()
@@ -145,19 +145,24 @@ namespace ShareX.ScreenCaptureLib
                 }
                 else
                 {
-                    using (Pen pen = new Pen(borderColor, borderSize))
+                    using (Pen pen = CreatePen(borderColor, borderSize, borderStyle))
                     {
-                        pen.StartCap = LineCap.Round;
-                        pen.EndCap = LineCap.Round;
-                        pen.LineJoin = LineJoin.Round;
-                        pen.DashStyle = (DashStyle)borderStyle;
-
                         g.DrawLines(pen, points.ToArray());
                     }
                 }
 
                 g.SmoothingMode = SmoothingMode.None;
             }
+        }
+
+        protected virtual Pen CreatePen(Color borderColor, int borderSize, BorderStyle borderStyle)
+        {
+            Pen pen = new Pen(borderColor, borderSize);
+            pen.StartCap = LineCap.Round;
+            pen.EndCap = LineCap.Round;
+            pen.LineJoin = LineJoin.Round;
+            pen.DashStyle = (DashStyle)borderStyle;
+            return pen;
         }
 
         public override void Move(float x, float y)

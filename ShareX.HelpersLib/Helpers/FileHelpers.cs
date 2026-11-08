@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2022 ShareX Team
+    Copyright (c) 2007-2026 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -131,6 +131,21 @@ namespace ShareX.HelpersLib
             return fileName;
         }
 
+        public static string AppendTextToFileName(string filePath, string text)
+        {
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                int pos = filePath.LastIndexOf('.');
+
+                if (pos >= 0)
+                {
+                    return filePath.Substring(0, pos) + text + filePath.Substring(pos);
+                }
+            }
+
+            return filePath + text;
+        }
+
         public static string AppendExtension(string filePath, string extension)
         {
             return filePath.TrimEnd('.') + '.' + extension.TrimStart('.');
@@ -245,7 +260,8 @@ namespace ShareX.HelpersLib
                     {
                         ProcessStartInfo psi = new ProcessStartInfo()
                         {
-                            FileName = filePath
+                            FileName = filePath,
+                            UseShellExecute = true
                         };
 
                         process.StartInfo = psi;
@@ -270,7 +286,7 @@ namespace ShareX.HelpersLib
             return false;
         }
 
-        public static bool OpenFolder(string folderPath)
+        public static bool OpenFolder(string folderPath, bool allowMessageBox = true)
         {
             if (!string.IsNullOrEmpty(folderPath) && Directory.Exists(folderPath))
             {
@@ -285,7 +301,8 @@ namespace ShareX.HelpersLib
                     {
                         ProcessStartInfo psi = new ProcessStartInfo()
                         {
-                            FileName = folderPath
+                            FileName = folderPath,
+                            UseShellExecute = true
                         };
 
                         process.StartInfo = psi;
@@ -301,7 +318,7 @@ namespace ShareX.HelpersLib
                     DebugHelper.WriteException(e, $"OpenFolder({folderPath}) failed.");
                 }
             }
-            else
+            else if (allowMessageBox)
             {
                 MessageBox.Show(Resources.Helpers_OpenFolder_Folder_not_exist_ + Environment.NewLine + folderPath, "ShareX",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -365,16 +382,40 @@ namespace ShareX.HelpersLib
             return filePath;
         }
 
-        public static bool BrowseFile(TextBox tb, string initialDirectory = "", bool detectSpecialFolders = false)
+        public static string BrowseFile(IWin32Window window = null, string title = null)
         {
-            return BrowseFile("ShareX - " + Resources.Helpers_BrowseFile_Choose_file, tb, initialDirectory, detectSpecialFolders);
+            using (OpenFileDialog ofd = new OpenFileDialog())
+            {
+                if (!string.IsNullOrEmpty(title))
+                {
+                    ofd.Title = title;
+                }
+
+                if (ofd.ShowDialog(window) == DialogResult.OK)
+                {
+                    string filePath = ofd.FileName;
+
+                    if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath))
+                    {
+                        return filePath;
+                    }
+                }
+            }
+
+            return null;
         }
 
-        public static bool BrowseFile(string title, TextBox tb, string initialDirectory = "", bool detectSpecialFolders = false)
+        public static bool BrowseFile(TextBox tb, string initialDirectory = "", bool detectSpecialFolders = false, string filter = "")
+        {
+            return BrowseFile("ShareX - " + Resources.Helpers_BrowseFile_Choose_file, tb, initialDirectory, detectSpecialFolders, filter);
+        }
+
+        public static bool BrowseFile(string title, TextBox tb, string initialDirectory = "", bool detectSpecialFolders = false, string filter = "")
         {
             using (OpenFileDialog ofd = new OpenFileDialog())
             {
                 ofd.Title = title;
+                ofd.Filter = filter;
 
                 try
                 {
@@ -421,33 +462,50 @@ namespace ShareX.HelpersLib
             return false;
         }
 
-        public static bool BrowseFolder(TextBox tb, string initialDirectory = "", bool detectSpecialFolders = false)
+        public static string BrowseFolder(string title = null, string initialDirectory = null)
+        {
+            using (FolderBrowserDialog fbd = new FolderBrowserDialog())
+            {
+                if (!string.IsNullOrEmpty(title))
+                {
+                    fbd.Description = title;
+                    fbd.UseDescriptionForTitle = true;
+                }
+
+                if (!string.IsNullOrEmpty(initialDirectory) && Directory.Exists(initialDirectory))
+                {
+                    fbd.InitialDirectory = initialDirectory;
+                }
+
+                if (fbd.ShowDialog() == DialogResult.OK)
+                {
+                    return fbd.SelectedPath;
+                }
+            }
+
+            return null;
+        }
+
+        public static bool BrowseFolder(TextBox tb, string initialDirectory = null, bool detectSpecialFolders = false)
         {
             return BrowseFolder("ShareX - " + Resources.Helpers_BrowseFolder_Choose_folder, tb, initialDirectory, detectSpecialFolders);
         }
 
-        public static bool BrowseFolder(string title, TextBox tb, string initialDirectory = "", bool detectSpecialFolders = false)
+        public static bool BrowseFolder(string title, TextBox tb, string initialDirectory = null, bool detectSpecialFolders = false)
         {
-            using (FolderSelectDialog fsd = new FolderSelectDialog())
+            string path = tb.Text;
+
+            if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
             {
-                fsd.Title = title;
+                initialDirectory = path;
+            }
 
-                string path = tb.Text;
+            string selectedPath = BrowseFolder(title, initialDirectory);
 
-                if (!string.IsNullOrEmpty(path) && Directory.Exists(path))
-                {
-                    fsd.InitialDirectory = path;
-                }
-                else if (!string.IsNullOrEmpty(initialDirectory))
-                {
-                    fsd.InitialDirectory = initialDirectory;
-                }
-
-                if (fsd.ShowDialog())
-                {
-                    tb.Text = detectSpecialFolders ? GetVariableFolderPath(fsd.FileName) : fsd.FileName;
-                    return true;
-                }
+            if (!string.IsNullOrEmpty(selectedPath))
+            {
+                tb.Text = detectSpecialFolders ? GetVariableFolderPath(selectedPath) : selectedPath;
+                return true;
             }
 
             return false;
@@ -620,6 +678,80 @@ namespace ShareX.HelpersLib
             return null;
         }
 
+        public static void CopyFiles(string filePath, string destinationFolder)
+        {
+            CopyFiles(new string[] { filePath }, destinationFolder);
+        }
+
+        public static void CopyFiles(string[] files, string destinationFolder)
+        {
+            if (files != null && files.Length > 0)
+            {
+                if (!Directory.Exists(destinationFolder))
+                {
+                    Directory.CreateDirectory(destinationFolder);
+                }
+
+                foreach (string filePath in files)
+                {
+                    string fileName = Path.GetFileName(filePath);
+                    string destinationFilePath = Path.Combine(destinationFolder, fileName);
+                    File.Copy(filePath, destinationFilePath);
+                }
+            }
+        }
+
+        public static void CopyFiles(string sourceFolder, string destinationFolder, string searchPattern = "*", string[] ignoreFiles = null)
+        {
+            string[] files = Directory.GetFiles(sourceFolder, searchPattern);
+
+            if (ignoreFiles != null)
+            {
+                List<string> newFiles = new List<string>();
+
+                foreach (string file in files)
+                {
+                    string fileName = Path.GetFileName(file);
+
+                    if (ignoreFiles.All(x => !fileName.Equals(x, StringComparison.OrdinalIgnoreCase)))
+                    {
+                        newFiles.Add(file);
+                    }
+                }
+
+                files = newFiles.ToArray();
+            }
+
+            CopyFiles(files, destinationFolder);
+        }
+
+        public static void CopyAll(string sourceDirectory, string targetDirectory)
+        {
+            DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
+            DirectoryInfo diTarget = new DirectoryInfo(targetDirectory);
+
+            CopyAll(diSource, diTarget);
+        }
+
+        public static void CopyAll(DirectoryInfo source, DirectoryInfo target)
+        {
+            if (!Directory.Exists(target.FullName))
+            {
+                Directory.CreateDirectory(target.FullName);
+            }
+
+            foreach (FileInfo fi in source.GetFiles())
+            {
+                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
+            }
+
+            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
+            {
+                DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
+                CopyAll(diSourceSubDir, nextTargetSubDir);
+            }
+        }
+
         public static string MoveFile(string filePath, string destinationFolder, bool overwrite = true)
         {
             if (!string.IsNullOrEmpty(filePath) && File.Exists(filePath) && !string.IsNullOrEmpty(destinationFolder))
@@ -728,33 +860,6 @@ namespace ShareX.HelpersLib
         {
             string path = Path.GetTempFileName();
             return Path.ChangeExtension(path, extension);
-        }
-
-        public static void CopyAll(string sourceDirectory, string targetDirectory)
-        {
-            DirectoryInfo diSource = new DirectoryInfo(sourceDirectory);
-            DirectoryInfo diTarget = new DirectoryInfo(targetDirectory);
-
-            CopyAll(diSource, diTarget);
-        }
-
-        public static void CopyAll(DirectoryInfo source, DirectoryInfo target)
-        {
-            if (!Directory.Exists(target.FullName))
-            {
-                Directory.CreateDirectory(target.FullName);
-            }
-
-            foreach (FileInfo fi in source.GetFiles())
-            {
-                fi.CopyTo(Path.Combine(target.FullName, fi.Name), true);
-            }
-
-            foreach (DirectoryInfo diSourceSubDir in source.GetDirectories())
-            {
-                DirectoryInfo nextTargetSubDir = target.CreateSubdirectory(diSourceSubDir.Name);
-                CopyAll(diSourceSubDir, nextTargetSubDir);
-            }
         }
 
         public static void CreateEmptyFile(string filePath)

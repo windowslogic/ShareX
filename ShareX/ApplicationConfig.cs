@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2022 ShareX Team
+    Copyright (c) 2007-2026 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -72,16 +72,15 @@ namespace ShareX
         public HotkeyType TrayLeftDoubleClickAction = HotkeyType.OpenMainWindow;
         public HotkeyType TrayMiddleClickAction = HotkeyType.ClipboardUploadWithContentViewer;
 
+        public bool AutoCheckUpdate = true;
+        public UpdateChannel UpdateChannel = UpdateChannel.Release;
+        // TEMP: For backward compatibility
         public bool CheckPreReleaseUpdates = false;
 
         #endregion General
 
         #region Theme
 
-        // TEMP: For backward compatibility
-        public bool UseDarkTheme = true;
-
-        public bool UseCustomTheme = true;
         public List<ShareXTheme> Themes = ShareXTheme.GetDefaultThemes();
         public int SelectedTheme = 0;
 
@@ -131,7 +130,7 @@ namespace ShareX
 
         #region Upload
 
-        public int UploadLimit = 5;
+        public int UploadLimit = 0;
         public int BufferSizePower = 5;
         public List<ClipboardFormat> ClipboardContentFormats = new List<ClipboardFormat>();
 
@@ -149,7 +148,7 @@ namespace ShareX
         public bool HistoryCheckURL = false;
 
         public RecentTask[] RecentTasks = null;
-        public bool RecentTasksSave = true;
+        public bool RecentTasksSave = false;
         public int RecentTasksMaxCount = 10;
         public bool RecentTasksShowInMainWindow = true;
         public bool RecentTasksShowInTrayMenu = true;
@@ -169,13 +168,7 @@ namespace ShareX
 
         #region Advanced
 
-        [Category("Application"), DefaultValue(true), Description("Automatically check updates.")]
-#if STEAM || MicrosoftStore
-        [Browsable(false)]
-#endif
-        //public bool AutoCheckUpdate { get; set; }
-
-        //[Category("Application"), DefaultValue(false), Description("Calculate and show file sizes in binary units (KiB, MiB etc.)")]
+        [Category("Application"), DefaultValue(false), Description("Calculate and show file sizes in binary units (KiB, MiB etc.)")]
         public bool BinaryUnits { get; set; }
 
         [Category("Application"), DefaultValue(false), Description("Show most recent task first in main window.")]
@@ -245,20 +238,17 @@ namespace ShareX
         [Category("Upload"), DefaultValue(false), Description("Can be used to disable uploading application wide.")]
         public bool DisableUpload { get; set; }
 
-        [Category("Upload"), DefaultValue(false), Description("Accept invalid SSL certificates when uploading.")]
-        public bool AcceptInvalidSSLCertificates { get; set; }
-
         [Category("Upload"), DefaultValue(true), Description("Ignore emojis while URL encoding upload results.")]
         public bool URLEncodeIgnoreEmoji { get; set; }
-
-        [Category("Upload"), DefaultValue(true), Description("Show first time upload warning.")]
-        public bool ShowUploadWarning { get; set; }
 
         [Category("Upload"), DefaultValue(true), Description("Show more than 10 files upload warning.")]
         public bool ShowMultiUploadWarning { get; set; }
 
         [Category("Upload"), DefaultValue(100), Description("Large file size defined in MB. ShareX will warn before uploading large files. 0 disables this feature.")]
         public int ShowLargeFileSizeWarning { get; set; }
+
+        [Category("Paths"), DefaultValue(false), Description("When enabled ShareX stores Uploaders configuration files per machine, e.g. UploadersConfig-MYPC.json.")]
+        public bool UseMachineSpecificUploadersConfig { get; set; }
 
         [Category("Paths"), Description("Custom uploaders configuration path. If you have already configured this setting in another device and you are attempting to use the same location, then backup the file before configuring this setting and restore after exiting ShareX.")]
         [Editor(typeof(DirectoryNameEditor), typeof(UITypeEditor))]

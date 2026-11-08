@@ -271,4 +271,16 @@ Utworzone foldery:</value>
   <data name="UploadersConfigForm_SendSpaceRegister_SendSpace_Registration___" xml:space="preserve">
     <value>Rejestracja w SendSpace</value>
   </data>
+  <data name="txtB2BucketWatermark" xml:space="preserve">
+    <value>(Opcjonalnie) Używane tylko wtedy, gdy nie ustawiono bucketa podczas tworzenia klucza</value>
+  </data>
+  <data name="UploadersConfigForm_OneDriveAddFolder_Querying_folders___" xml:space="preserve">
+    <value>Przeszukiwanie folderów...</value>
+  </data>
+  <data name="Connect" xml:space="preserve">
+    <value>Połącz...</value>
+  </data>
+  <data name="Disconnect" xml:space="preserve">
+    <value>Rozłącz</value>
+  </data>
 </root>

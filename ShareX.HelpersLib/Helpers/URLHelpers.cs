@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2022 ShareX Team
+    Copyright (c) 2007-2026 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -44,7 +44,8 @@ namespace ShareX.HelpersLib
         public const string URLPathCharacters = URLCharacters + "/"; // 47
         public const string ValidURLCharacters = URLPathCharacters + ":?#[]@!$&'()*+,;= ";
 
-        public static readonly char[] BidiControlCharacters = new char[] { '\u200E', '\u200F', '\u202A', '\u202B', '\u202C', '\u202D', '\u202E' };
+        private static readonly string[] URLPrefixes = new string[] { "http://", "https://", "ftp://", "ftps://", "file://", "//" };
+        private static readonly char[] BidiControlCharacters = new char[] { '\u200E', '\u200F', '\u202A', '\u202B', '\u202C', '\u202D', '\u202E' };
 
         public static void OpenURL(string url)
         {
@@ -57,6 +58,7 @@ namespace ShareX.HelpersLib
                         using (Process process = new Process())
                         {
                             ProcessStartInfo psi = new ProcessStartInfo();
+                            psi.UseShellExecute = true;
 
                             if (!string.IsNullOrEmpty(HelpersOptions.BrowserPath))
                             {
@@ -414,8 +416,6 @@ namespace ShareX.HelpersLib
             return paths;
         }
 
-        private static readonly string[] URLPrefixes = new string[] { "http://", "https://", "ftp://", "ftps://", "file://", "//" };
-
         public static bool HasPrefix(string url)
         {
             return URLPrefixes.Any(x => url.StartsWith(x, StringComparison.OrdinalIgnoreCase));
@@ -426,7 +426,7 @@ namespace ShareX.HelpersLib
             return URLPrefixes.FirstOrDefault(x => url.StartsWith(x, StringComparison.OrdinalIgnoreCase));
         }
 
-        public static string FixPrefix(string url, string prefix = "http://")
+        public static string FixPrefix(string url, string prefix = "https://")
         {
             if (!string.IsNullOrEmpty(url) && !HasPrefix(url))
             {

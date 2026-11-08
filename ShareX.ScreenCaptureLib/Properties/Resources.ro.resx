@@ -138,9 +138,6 @@
   <data name="ShapeManager_CreateToolbar_Rotate90CounterClockwise" xml:space="preserve">
     <value>Rotiți 90° în sens invers acelor de ceasornic</value>
   </data>
-  <data name="_Empty[1]" xml:space="preserve">
-    <value>Modul de interpolare:</value>
-  </data>
   <data name="ShapeManager_CreateContextMenu_Capture_monitor" xml:space="preserve">
     <value>Capturați monitorul</value>
   </data>
@@ -173,9 +170,6 @@
   </data>
   <data name="AutoCopyImageToClipboard" xml:space="preserve">
     <value>Copiați automat imaginea în clipboard</value>
-  </data>
-  <data name="FFmpegOptionsForm_UpdateUI_Bitrate___0_k" xml:space="preserve">
-    <value>Rata de biți: {0}k</value>
   </data>
   <data name="Blur" xml:space="preserve">
     <value>Încețoșare</value>
@@ -229,7 +223,7 @@
     <value>Continuați sarcina (Spațiu sau click dreapta)</value>
   </data>
   <data name="ShapeManager_CreateToolbar_CopyImageToClipboard" xml:space="preserve">
-    <value>Copiați imaginea în clipboard (Ctrl + Shift + C)</value>
+    <value>Copiați imaginea în clipboard (Ctrl + C)</value>
   </data>
   <data name="ShapeManager_CreateContextMenu_Corner_radius_" xml:space="preserve">
     <value>Raza colțului:</value>
@@ -245,9 +239,6 @@
   </data>
   <data name="ShapeManager_CreateToolbar_DeleteAll" xml:space="preserve">
     <value>Ștergeți toate</value>
-  </data>
-  <data name="FFmpegOptionsForm_DownloaderForm_InstallRequested_Download_of_FFmpeg_failed_" xml:space="preserve">
-    <value>Descărcarea FFmpeg a eșuat.</value>
   </data>
   <data name="ShapeManager_CreateToolbar_DropShadow" xml:space="preserve">
     <value>Umbră</value>
@@ -375,9 +366,6 @@
   <data name="Processing" xml:space="preserve">
     <value>Se procesează...</value>
   </data>
-  <data name="FFmpegOptionsForm_UpdateUI_Quality_" xml:space="preserve">
-    <value>Calitate:</value>
-  </data>
   <data name="RectangleLight_InitializeComponent_Rectangle_capture_light" xml:space="preserve">
     <value>Captură dreptunghiulară clară</value>
   </data>
@@ -449,18 +437,11 @@ X: {4} Y: {5}</value>
   <data name="ScrollingCaptureForm_StartCapture_Stop_capture" xml:space="preserve">
     <value>Opriți captura</value>
   </data>
-  <data name="FFmpegOptionsForm_DownloaderForm_InstallRequested_Successfully_downloaded_FFmpeg_" xml:space="preserve">
-    <value>S-a descărcat cu succes FFmpeg.</value>
-  </data>
   <data name="ShapeManager_CreateContextMenu_SwitchToDrawingToolAfterSelection" xml:space="preserve">
     <value>Comutare la instrumentul de desen după selectarea formei</value>
   </data>
   <data name="ShapeManager_CreateContextMenu_SwitchToSelectionToolAfterDrawing" xml:space="preserve">
     <value>Comutare la instrumentul de selecție după desenarea formei</value>
-  </data>
-  <data name="RegionCaptureForm_ShowExitConfirmation_Text" xml:space="preserve">
-    <value>Există schimbări nesalvate.
-Doriți să închideți editorul de imagini?</value>
   </data>
   <data name="ThisWindowWillCloseBeforeOpeningKeybindsPageWantContinue" xml:space="preserve">
     <value>Această fereastră se va închide înainte de a deschide pagina web de scurtături. Doriți să continuați?</value>

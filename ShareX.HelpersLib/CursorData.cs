@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2022 ShareX Team
+    Copyright (c) 2007-2026 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -111,17 +111,11 @@ namespace ShareX.HelpersLib
         {
             float sizeMultiplier = 1f;
 
-            try
-            {
-                int cursorSize = RegistryHelpers.GetValueDWord(@"SOFTWARE\Microsoft\Accessibility", "CursorSize");
+            int? cursorSize = RegistryHelpers.GetValueDWord(@"SOFTWARE\Microsoft\Accessibility", "CursorSize");
 
-                if (cursorSize > 1)
-                {
-                    sizeMultiplier = 1f + ((cursorSize - 1) * 0.5f);
-                }
-            }
-            catch
+            if (cursorSize != null && cursorSize > 1)
             {
+                sizeMultiplier = 1f + ((cursorSize.Value - 1) * 0.5f);
             }
 
             return sizeMultiplier;

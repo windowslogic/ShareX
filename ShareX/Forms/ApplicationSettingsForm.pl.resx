@@ -225,9 +225,6 @@
   <data name="gbRecentLinks.Text" xml:space="preserve">
     <value>Ostatnie zadania</value>
   </data>
-  <data name="gbSteam.Text" xml:space="preserve">
-    <value>Steam</value>
-  </data>
   <data name="lblUploadLimitHint.Text" xml:space="preserve">
     <value>0 - 25 (0 wyłącza)</value>
   </data>
@@ -240,14 +237,8 @@
   <data name="lblProxyHost.Text" xml:space="preserve">
     <value>Host:</value>
   </data>
-  <data name="lblPreviewPersonalFolderPath.Text" xml:space="preserve">
-    <value>...</value>
-  </data>
   <data name="gbThumbnailView.Text" xml:space="preserve">
     <value>Widok miniatur</value>
-  </data>
-  <data name="gbWindows.Text" xml:space="preserve">
-    <value>Windows</value>
   </data>
   <data name="gbListView.Text" xml:space="preserve">
     <value>Widok listy</value>
@@ -258,17 +249,11 @@
   <data name="cbUseWhiteShareXIcon.Text" xml:space="preserve">
     <value>Użyj białej ikony ShareX</value>
   </data>
-  <data name="cbUseCustomTheme.Text" xml:space="preserve">
-    <value>Użyj niestandardowego motywu</value>
-  </data>
   <data name="cbShowTray.Text" xml:space="preserve">
     <value>Pokaż ikonę w zasobniku</value>
   </data>
   <data name="cbSilentRun.Text" xml:space="preserve">
     <value>Minimalizuj do zasobnika przy starcie</value>
-  </data>
-  <data name="cbCheckPreReleaseUpdates.Text" xml:space="preserve">
-    <value>Sprawdź aktualizacje przedpremierowe</value>
   </data>
   <data name="lblExportImportNote.Text" xml:space="preserve">
     <value>Uwaga: Nie udostępniaj nikomu wyeksportowanego pliku, ponieważ może on zawierać prywatne informacje, takie jak szczegóły konta i historia przesyłania.</value>
@@ -338,9 +323,6 @@
   </data>
   <data name="lblThumbnailViewThumbnailClickAction.Text" xml:space="preserve">
     <value>Akcja kliknięcia miniatury:</value>
-  </data>
-  <data name="lblThumbnailViewThumbnailSizeX.Text" xml:space="preserve">
-    <value>x</value>
   </data>
   <data name="lblThumbnailViewTitleLocation.Text" xml:space="preserve">
     <value>Lokalizacja tytułu:</value>
@@ -437,5 +419,8 @@
   </data>
   <data name="lblRecentTasksMaxCount.Text" xml:space="preserve">
     <value>Maksymalna liczba zadań do zapisania:</value>
+  </data>
+  <data name="cbAutoCheckUpdate.Text" xml:space="preserve">
+    <value>Automatycznie sprawdzaj aktualizacje</value>
   </data>
 </root>

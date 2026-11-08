@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2022 ShareX Team
+    Copyright (c) 2007-2026 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -29,6 +29,8 @@ using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -36,11 +38,6 @@ namespace ShareX.MediaLib
 {
     public class FFmpegCLIManager : ExternalCLIManager
     {
-        public const string SourceNone = "None";
-        public const string SourceGDIGrab = "GDI grab";
-        public const string SourceVideoDevice = "screen-capture-recorder";
-        public const string SourceAudioDevice = "virtual-audio-capturer";
-
         public const int x264_min = 0;
         public const int x264_max = 51;
         public const int x265_min = 0;
@@ -49,6 +46,8 @@ namespace ShareX.MediaLib
         public const int vp8_max = 63;
         public const int vp9_min = 0;
         public const int vp9_max = 63;
+        public const int av1_min = 0;
+        public const int av1_max = 63;
         public const int xvid_min = 1;
         public const int xvid_max = 31;
         public const int mp3_min = 0;
@@ -127,7 +126,7 @@ namespace ShareX.MediaLib
                 {
                     Output.AppendLine(data);
 
-                    if (!IsEncoding && data.Contains("Press [q] to stop", StringComparison.InvariantCultureIgnoreCase))
+                    if (!IsEncoding && data.Contains("Press [q] to stop", StringComparison.OrdinalIgnoreCase))
                     {
                         IsEncoding = true;
 
@@ -184,7 +183,7 @@ namespace ShareX.MediaLib
             VideoInfo videoInfo = new VideoInfo();
             videoInfo.FilePath = videoPath;
 
-            Run($"-hide_banner -i \"{videoPath}\"");
+            Run($"-i \"{videoPath}\"");
             string output = Output.ToString();
 
             Match matchInput = Regex.Match(output, @"Duration: (?<Duration>\d{2}:\d{2}:\d{2}\.\d{2}),.+?start: (?<Start>\d+\.\d+),.+?bitrate: (?<Bitrate>\d+) kb/s",
@@ -226,7 +225,7 @@ namespace ShareX.MediaLib
         {
             DirectShowDevices devices = new DirectShowDevices();
 
-            Run("-hide_banner -list_devices true -f dshow -i dummy");
+            Run("-list_devices true -f dshow -i dummy");
 
             string output = Output.ToString();
             string[] lines = output.Lines();
@@ -273,6 +272,36 @@ namespace ShareX.MediaLib
             }
 
             return devices;
+        }
+
+        public void ConcatenateVideos(string[] inputFiles, string outputFile, bool autoDeleteInputFiles = false)
+        {
+            string listFile = outputFile + ".txt";
+            string contents = string.Join(Environment.NewLine, inputFiles.Select(inputFile => $"file '{inputFile}'"));
+            File.WriteAllText(listFile, contents);
+
+            try
+            {
+                bool result = Run($"-f concat -safe 0 -i \"{listFile}\" -c copy \"{outputFile}\"");
+
+                if (result && autoDeleteInputFiles)
+                {
+                    foreach (string inputFile in inputFiles)
+                    {
+                        if (File.Exists(inputFile))
+                        {
+                            File.Delete(inputFile);
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                if (File.Exists(listFile))
+                {
+                    File.Delete(listFile);
+                }
+            }
         }
     }
 }

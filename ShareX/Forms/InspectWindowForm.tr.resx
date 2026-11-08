@@ -129,4 +129,13 @@
   <data name="btnRefresh.Text" xml:space="preserve">
     <value>Yenile</value>
   </data>
+  <data name="cbTopMost.Text" xml:space="preserve">
+    <value>En üstte</value>
+  </data>
+  <data name="lblOpacity.Text" xml:space="preserve">
+    <value>Saydamlık:</value>
+  </data>
+  <data name="mbWindowList.Text" xml:space="preserve">
+    <value>Pencere listesi</value>
+  </data>
 </root>

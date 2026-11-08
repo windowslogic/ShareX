@@ -130,7 +130,7 @@
     <value>Wartość</value>
   </data>
   <data name="btnTestURLSyntax.Text" xml:space="preserve">
-    <value>Test</value>
+    <value>Test...</value>
   </data>
   <data name="btnTextUploaderTest.Text" xml:space="preserve">
     <value>Test</value>
@@ -224,9 +224,6 @@
   </data>
   <data name="$this.Text" xml:space="preserve">
     <value>ShareX - Ustawienia własnego serwisu</value>
-  </data>
-  <data name="mbHelp.Text" xml:space="preserve">
-    <value>?</value>
   </data>
   <data name="tsmiExportAll.Text" xml:space="preserve">
     <value>Eksportuj wszystko...</value>

@@ -29,117 +29,143 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ImageHistorySettingsForm));
-            this.lblThumbnailSize = new System.Windows.Forms.Label();
-            this.lblMaximumImageLimit = new System.Windows.Forms.Label();
-            this.nudThumbnailSize = new System.Windows.Forms.NumericUpDown();
-            this.nudMaximumImageLimit = new System.Windows.Forms.NumericUpDown();
-            this.lblThumbnailSizeUnit = new System.Windows.Forms.Label();
-            this.cbRememberSearchText = new System.Windows.Forms.CheckBox();
-            this.cbFilterMissingFiles = new System.Windows.Forms.CheckBox();
-            this.cbRememberWindowState = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.nudThumbnailSize)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumImageLimit)).BeginInit();
-            this.SuspendLayout();
+            lblThumbnailSize = new System.Windows.Forms.Label();
+            lblMaximumImageLimit = new System.Windows.Forms.Label();
+            nudThumbnailSizeWidth = new System.Windows.Forms.NumericUpDown();
+            nudMaximumImageLimit = new System.Windows.Forms.NumericUpDown();
+            lblThumbnailSizeWidthUnit = new System.Windows.Forms.Label();
+            cbRememberSearchText = new System.Windows.Forms.CheckBox();
+            cbFilterMissingFiles = new System.Windows.Forms.CheckBox();
+            cbRememberWindowState = new System.Windows.Forms.CheckBox();
+            cbImageOnly = new System.Windows.Forms.CheckBox();
+            cbAutoLoadMoreItems = new System.Windows.Forms.CheckBox();
+            lblThumbnailSizeHeightUnit = new System.Windows.Forms.Label();
+            nudThumbnailSizeHeight = new System.Windows.Forms.NumericUpDown();
+            ((System.ComponentModel.ISupportInitialize)nudThumbnailSizeWidth).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaximumImageLimit).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)nudThumbnailSizeHeight).BeginInit();
+            SuspendLayout();
             // 
             // lblThumbnailSize
             // 
-            resources.ApplyResources(this.lblThumbnailSize, "lblThumbnailSize");
-            this.lblThumbnailSize.Name = "lblThumbnailSize";
+            resources.ApplyResources(lblThumbnailSize, "lblThumbnailSize");
+            lblThumbnailSize.Name = "lblThumbnailSize";
             // 
             // lblMaximumImageLimit
             // 
-            resources.ApplyResources(this.lblMaximumImageLimit, "lblMaximumImageLimit");
-            this.lblMaximumImageLimit.Name = "lblMaximumImageLimit";
+            resources.ApplyResources(lblMaximumImageLimit, "lblMaximumImageLimit");
+            lblMaximumImageLimit.Name = "lblMaximumImageLimit";
             // 
-            // nudThumbnailSize
+            // nudThumbnailSizeWidth
             // 
-            resources.ApplyResources(this.nudThumbnailSize, "nudThumbnailSize");
-            this.nudThumbnailSize.Maximum = new decimal(new int[] {
-            1000,
-            0,
-            0,
-            0});
-            this.nudThumbnailSize.Minimum = new decimal(new int[] {
-            50,
-            0,
-            0,
-            0});
-            this.nudThumbnailSize.Name = "nudThumbnailSize";
-            this.nudThumbnailSize.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudThumbnailSize.ValueChanged += new System.EventHandler(this.nudThumbnailSize_ValueChanged);
+            resources.ApplyResources(nudThumbnailSizeWidth, "nudThumbnailSizeWidth");
+            nudThumbnailSizeWidth.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            nudThumbnailSizeWidth.Minimum = new decimal(new int[] { 50, 0, 0, 0 });
+            nudThumbnailSizeWidth.Name = "nudThumbnailSizeWidth";
+            nudThumbnailSizeWidth.Value = new decimal(new int[] { 100, 0, 0, 0 });
+            nudThumbnailSizeWidth.ValueChanged += nudThumbnailSizeWidth_ValueChanged;
             // 
             // nudMaximumImageLimit
             // 
-            resources.ApplyResources(this.nudMaximumImageLimit, "nudMaximumImageLimit");
-            this.nudMaximumImageLimit.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.nudMaximumImageLimit.Name = "nudMaximumImageLimit";
-            this.nudMaximumImageLimit.ValueChanged += new System.EventHandler(this.nudMaximumImageLimit_ValueChanged);
+            resources.ApplyResources(nudMaximumImageLimit, "nudMaximumImageLimit");
+            nudMaximumImageLimit.Maximum = new decimal(new int[] { 10000, 0, 0, 0 });
+            nudMaximumImageLimit.Name = "nudMaximumImageLimit";
+            nudMaximumImageLimit.ValueChanged += nudMaximumImageLimit_ValueChanged;
             // 
-            // lblThumbnailSizeUnit
+            // lblThumbnailSizeWidthUnit
             // 
-            resources.ApplyResources(this.lblThumbnailSizeUnit, "lblThumbnailSizeUnit");
-            this.lblThumbnailSizeUnit.Name = "lblThumbnailSizeUnit";
+            resources.ApplyResources(lblThumbnailSizeWidthUnit, "lblThumbnailSizeWidthUnit");
+            lblThumbnailSizeWidthUnit.Name = "lblThumbnailSizeWidthUnit";
             // 
             // cbRememberSearchText
             // 
-            resources.ApplyResources(this.cbRememberSearchText, "cbRememberSearchText");
-            this.cbRememberSearchText.Name = "cbRememberSearchText";
-            this.cbRememberSearchText.UseVisualStyleBackColor = true;
-            this.cbRememberSearchText.CheckedChanged += new System.EventHandler(this.cbRememberSearchText_CheckedChanged);
+            resources.ApplyResources(cbRememberSearchText, "cbRememberSearchText");
+            cbRememberSearchText.Name = "cbRememberSearchText";
+            cbRememberSearchText.UseVisualStyleBackColor = true;
+            cbRememberSearchText.CheckedChanged += cbRememberSearchText_CheckedChanged;
             // 
             // cbFilterMissingFiles
             // 
-            resources.ApplyResources(this.cbFilterMissingFiles, "cbFilterMissingFiles");
-            this.cbFilterMissingFiles.Name = "cbFilterMissingFiles";
-            this.cbFilterMissingFiles.UseVisualStyleBackColor = true;
-            this.cbFilterMissingFiles.CheckedChanged += new System.EventHandler(this.cbFilterMissingFiles_CheckedChanged);
+            resources.ApplyResources(cbFilterMissingFiles, "cbFilterMissingFiles");
+            cbFilterMissingFiles.Name = "cbFilterMissingFiles";
+            cbFilterMissingFiles.UseVisualStyleBackColor = true;
+            cbFilterMissingFiles.CheckedChanged += cbFilterMissingFiles_CheckedChanged;
             // 
             // cbRememberWindowState
             // 
-            resources.ApplyResources(this.cbRememberWindowState, "cbRememberWindowState");
-            this.cbRememberWindowState.Name = "cbRememberWindowState";
-            this.cbRememberWindowState.UseVisualStyleBackColor = true;
-            this.cbRememberWindowState.CheckedChanged += new System.EventHandler(this.cbRememberWindowState_CheckedChanged);
+            resources.ApplyResources(cbRememberWindowState, "cbRememberWindowState");
+            cbRememberWindowState.Name = "cbRememberWindowState";
+            cbRememberWindowState.UseVisualStyleBackColor = true;
+            cbRememberWindowState.CheckedChanged += cbRememberWindowState_CheckedChanged;
+            // 
+            // cbImageOnly
+            // 
+            resources.ApplyResources(cbImageOnly, "cbImageOnly");
+            cbImageOnly.Name = "cbImageOnly";
+            cbImageOnly.UseVisualStyleBackColor = true;
+            cbImageOnly.CheckedChanged += cbImageOnly_CheckedChanged;
+            // 
+            // cbAutoLoadMoreItems
+            // 
+            resources.ApplyResources(cbAutoLoadMoreItems, "cbAutoLoadMoreItems");
+            cbAutoLoadMoreItems.Name = "cbAutoLoadMoreItems";
+            cbAutoLoadMoreItems.UseVisualStyleBackColor = true;
+            cbAutoLoadMoreItems.CheckedChanged += cbAutoLoadMoreItems_CheckedChanged;
+            // 
+            // lblThumbnailSizeHeightUnit
+            // 
+            resources.ApplyResources(lblThumbnailSizeHeightUnit, "lblThumbnailSizeHeightUnit");
+            lblThumbnailSizeHeightUnit.Name = "lblThumbnailSizeHeightUnit";
+            // 
+            // nudThumbnailSizeHeight
+            // 
+            resources.ApplyResources(nudThumbnailSizeHeight, "nudThumbnailSizeHeight");
+            nudThumbnailSizeHeight.Maximum = new decimal(new int[] { 1000, 0, 0, 0 });
+            nudThumbnailSizeHeight.Minimum = new decimal(new int[] { 50, 0, 0, 0 });
+            nudThumbnailSizeHeight.Name = "nudThumbnailSizeHeight";
+            nudThumbnailSizeHeight.Value = new decimal(new int[] { 100, 0, 0, 0 });
+            nudThumbnailSizeHeight.ValueChanged += nudThumbnailSizeHeight_ValueChanged;
             // 
             // ImageHistorySettingsForm
             // 
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.SystemColors.Window;
-            this.Controls.Add(this.cbRememberWindowState);
-            this.Controls.Add(this.cbFilterMissingFiles);
-            this.Controls.Add(this.cbRememberSearchText);
-            this.Controls.Add(this.lblThumbnailSizeUnit);
-            this.Controls.Add(this.nudMaximumImageLimit);
-            this.Controls.Add(this.nudThumbnailSize);
-            this.Controls.Add(this.lblMaximumImageLimit);
-            this.Controls.Add(this.lblThumbnailSize);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.MaximizeBox = false;
-            this.Name = "ImageHistorySettingsForm";
-            ((System.ComponentModel.ISupportInitialize)(this.nudThumbnailSize)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumImageLimit)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            BackColor = System.Drawing.SystemColors.Window;
+            Controls.Add(lblThumbnailSizeHeightUnit);
+            Controls.Add(nudThumbnailSizeHeight);
+            Controls.Add(cbAutoLoadMoreItems);
+            Controls.Add(cbImageOnly);
+            Controls.Add(cbRememberWindowState);
+            Controls.Add(cbFilterMissingFiles);
+            Controls.Add(cbRememberSearchText);
+            Controls.Add(lblThumbnailSizeWidthUnit);
+            Controls.Add(nudMaximumImageLimit);
+            Controls.Add(nudThumbnailSizeWidth);
+            Controls.Add(lblMaximumImageLimit);
+            Controls.Add(lblThumbnailSize);
+            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            MaximizeBox = false;
+            Name = "ImageHistorySettingsForm";
+            ((System.ComponentModel.ISupportInitialize)nudThumbnailSizeWidth).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudMaximumImageLimit).EndInit();
+            ((System.ComponentModel.ISupportInitialize)nudThumbnailSizeHeight).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 
         #endregion
         private System.Windows.Forms.Label lblThumbnailSize;
         private System.Windows.Forms.Label lblMaximumImageLimit;
-        private System.Windows.Forms.NumericUpDown nudThumbnailSize;
+        private System.Windows.Forms.NumericUpDown nudThumbnailSizeWidth;
         private System.Windows.Forms.NumericUpDown nudMaximumImageLimit;
-        private System.Windows.Forms.Label lblThumbnailSizeUnit;
+        private System.Windows.Forms.Label lblThumbnailSizeWidthUnit;
         private System.Windows.Forms.CheckBox cbRememberSearchText;
         private System.Windows.Forms.CheckBox cbFilterMissingFiles;
         private System.Windows.Forms.CheckBox cbRememberWindowState;
+        private System.Windows.Forms.CheckBox cbImageOnly;
+        private System.Windows.Forms.CheckBox cbAutoLoadMoreItems;
+        private System.Windows.Forms.Label lblThumbnailSizeHeightUnit;
+        private System.Windows.Forms.NumericUpDown nudThumbnailSizeHeight;
     }
 }

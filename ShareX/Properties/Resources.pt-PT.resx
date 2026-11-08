@@ -164,9 +164,6 @@ Botão do meio (scroll) para fechar</value>
   <data name="ApplicationSettingsForm_btnBrowsePersonalFolderPath_Click_Choose_ShareX_personal_folder_path" xml:space="preserve">
     <value>Escolher caminho da pasta raiz do ShareX</value>
   </data>
-  <data name="ApplicationSettingsForm_btnCheckDevBuild_Click_DevBuilds_Warning" xml:space="preserve">
-    <value>Versões de programador são instáveis e são usadas apenas para testes. Deseja continuar com a instalação?</value>
-  </data>
   <data name="ApplicationSettingsForm_btnResetSettings_Click_WouldYouLikeToResetShareXSettings" xml:space="preserve">
     <value>Deseja repor as definições do ShareX?</value>
   </data>
@@ -236,9 +233,6 @@ aqui</value>
   <data name="HotkeyManager_ShowFailedHotkeys_hotkeys" xml:space="preserve">
     <value>teclas de atalho</value>
   </data>
-  <data name="HotkeyManager_ShowFailedHotkeys_These_applications_could_be_conflicting_" xml:space="preserve">
-    <value>Estas aplicações podem causar conflitos:</value>
-  </data>
   <data name="HotkeyManager_ShowFailedHotkeys_Unable_to_register_hotkey" xml:space="preserve">
     <value>Não foi possivel registar {0}:
 
@@ -251,9 +245,6 @@ Por favor, selecione uma tecla de atalho diferente ou feche o programa que está
   </data>
   <data name="HotkeySettingsForm_Reset_all_hotkeys_to_defaults_Confirmation" xml:space="preserve">
     <value>Repor todas as teclas de atalho?</value>
-  </data>
-  <data name="ImageData_Write_Error" xml:space="preserve">
-    <value>Não foi possível guardar a imagem no caminho {0}.</value>
   </data>
   <data name="IntegrationHelpers_EditWithShareX" xml:space="preserve">
     <value>Editar com ShareX</value>
@@ -270,9 +261,6 @@ Por favor, selecione uma tecla de atalho diferente ou feche o programa que está
   <data name="MainForm_tsmiTestTextUpload_Click_Text_upload_test" xml:space="preserve">
     <value>Teste de envio de texto</value>
   </data>
-  <data name="MainForm_UpdateMainFormTip_Currently_configured_hotkeys_" xml:space="preserve">
-    <value>Teclas de atalho configuradas actualmente:</value>
-  </data>
   <data name="MainForm_UpdateToggleHotkeyButton_Disable_hotkeys" xml:space="preserve">
     <value>Desactivar teclas de atalho</value>
   </data>
@@ -284,21 +272,6 @@ Por favor, selecione uma tecla de atalho diferente ou feche o programa que está
   </data>
   <data name="MainForm_UploadDebugLogWarning" xml:space="preserve">
     <value>O relatório de depuração pode contêr informação privada. Têm a certeza que deseja prosseguir?</value>
-  </data>
-  <data name="OCRForm_AutoComplete" xml:space="preserve">
-    <value>O resultado do OCR foi copiado para a área de transferências.</value>
-  </data>
-  <data name="OCRForm_AutoCompleteFail" xml:space="preserve">
-    <value>Um erro ocorreu durante o processamento do ORC ou nenhum texto foi obtido.</value>
-  </data>
-  <data name="OCRForm_AutoProcessing" xml:space="preserve">
-    <value>OCR está a procesar.</value>
-  </data>
-  <data name="PleaseNoteThatShareXIsUsingOCRSpaceSOnlineAPIToPerformOpticalCharacterRecognitionDoYouGivePermissionToShareXToUploadImagesToThisService" xml:space="preserve">
-    <value>Por favor note que ShareX está usando OCR.Space's online API para realizar reconhecimento óptico de caractéres. Deseja dar permissão ao ShareX para enviar imagens para este serviço?</value>
-  </data>
-  <data name="Program_Run_Error" xml:space="preserve">
-    <value>Erro</value>
   </data>
   <data name="Program_Run_Unable_to_create_folder_" xml:space="preserve">
     <value>Não foi possível criar pasta:</value>
@@ -336,9 +309,6 @@ Por favor execute o ShareX como administrador para mudar o caminho da pasta.</va
 
 Deseja reiniciar agora?</value>
   </data>
-  <data name="ShareXOpticalCharacterRecognition" xml:space="preserve">
-    <value>ShareX - OCR (reconhecimento óptico de caractéres)</value>
-  </data>
   <data name="SwitchToListView" xml:space="preserve">
     <value>Mudar para vista de Lista</value>
   </data>
@@ -353,12 +323,6 @@ Deseja reiniciar agora?</value>
   </data>
   <data name="TaskHelpers_ToggleHotkeys_Hotkeys_enabled_" xml:space="preserve">
     <value>Teclas de atalho desativadas.</value>
-  </data>
-  <data name="TaskHelpers_TweetMessage_Tweet_successfully_sent_" xml:space="preserve">
-    <value>Tweet enviado com sucesso.</value>
-  </data>
-  <data name="TaskHelpers_TweetMessage_Unable_to_find_valid_Twitter_account_" xml:space="preserve">
-    <value>Não foi possível encontrar uma conta válida do Twitter.</value>
   </data>
   <data name="TaskManager_CreateListViewItem_History" xml:space="preserve">
     <value>Histórico</value>

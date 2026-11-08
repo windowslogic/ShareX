@@ -423,9 +423,6 @@
   <data name="lblRegionCaptureSnapSizesWidth.Text" xml:space="preserve">
     <value>宽：</value>
   </data>
-  <data name="cbRegionCaptureUseDimming.Text" xml:space="preserve">
-    <value>背景暗化（便于区分选区，将影响启动速度）</value>
-  </data>
   <data name="cbRegionCaptureUseCustomInfoText.Text" xml:space="preserve">
     <value>在光标附近显示自定义信息：</value>
   </data>
@@ -511,7 +508,7 @@
     <value>使用无损编码录制，并应用用户编码选项</value>
   </data>
   <data name="cbScreenRecordConfirmAbort.Text" xml:space="preserve">
-    <value>中止时确认</value>
+    <value>取消时确认</value>
   </data>
   <data name="cbCaptureOCRAutoCopy.Text" xml:space="preserve">
     <value>自动复制结果至剪贴板</value>
@@ -569,9 +566,6 @@
   </data>
   <data name="btnCustomTaskCompletedSoundPath.Text" xml:space="preserve">
     <value>...</value>
-  </data>
-  <data name="cbDisableNotifications.Text" xml:space="preserve">
-    <value>禁用通知</value>
   </data>
   <data name="cbDisableNotificationsOnFullscreen.Text" xml:space="preserve">
     <value>全屏时禁用通知</value>

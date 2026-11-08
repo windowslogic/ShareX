@@ -32,86 +32,88 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(AboutForm));
-            this.lblProductName = new System.Windows.Forms.Label();
-            this.pbLogo = new System.Windows.Forms.PictureBox();
-            this.btnClose = new System.Windows.Forms.Button();
-            this.lblBuild = new System.Windows.Forms.Label();
-            this.lnkUpdate = new System.Windows.Forms.LinkLabel();
-            this.cLogo = new ShareX.HelpersLib.Canvas();
-            this.rtbInfo = new ShareX.HelpersLib.ReadOnlyRichTextBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).BeginInit();
-            this.SuspendLayout();
+            lblProductName = new System.Windows.Forms.Label();
+            pbLogo = new System.Windows.Forms.PictureBox();
+            btnClose = new System.Windows.Forms.Button();
+            lblBuild = new System.Windows.Forms.Label();
+            lnkUpdate = new System.Windows.Forms.LinkLabel();
+            cLogo = new ShareX.HelpersLib.Canvas();
+            rtbInfo = new ShareX.HelpersLib.ReadOnlyRichTextBox();
+            ((System.ComponentModel.ISupportInitialize)pbLogo).BeginInit();
+            SuspendLayout();
             // 
             // lblProductName
             // 
-            resources.ApplyResources(this.lblProductName, "lblProductName");
-            this.lblProductName.BackColor = System.Drawing.Color.Transparent;
-            this.lblProductName.Name = "lblProductName";
+            resources.ApplyResources(lblProductName, "lblProductName");
+            lblProductName.BackColor = System.Drawing.Color.Transparent;
+            lblProductName.Name = "lblProductName";
             // 
             // pbLogo
             // 
-            resources.ApplyResources(this.pbLogo, "pbLogo");
-            this.pbLogo.BackColor = System.Drawing.Color.Transparent;
-            this.pbLogo.Name = "pbLogo";
-            this.pbLogo.TabStop = false;
-            this.pbLogo.MouseDown += new System.Windows.Forms.MouseEventHandler(this.pbLogo_MouseDown);
+            resources.ApplyResources(pbLogo, "pbLogo");
+            pbLogo.BackColor = System.Drawing.Color.Transparent;
+            pbLogo.Name = "pbLogo";
+            pbLogo.TabStop = false;
+            pbLogo.MouseDown += pbLogo_MouseDown;
             // 
             // btnClose
             // 
-            resources.ApplyResources(this.btnClose, "btnClose");
-            this.btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnClose.Name = "btnClose";
-            this.btnClose.UseVisualStyleBackColor = true;
-            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
+            resources.ApplyResources(btnClose, "btnClose");
+            btnClose.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            btnClose.Name = "btnClose";
+            btnClose.UseVisualStyleBackColor = true;
+            btnClose.Click += btnClose_Click;
             // 
             // lblBuild
             // 
-            resources.ApplyResources(this.lblBuild, "lblBuild");
-            this.lblBuild.Name = "lblBuild";
+            resources.ApplyResources(lblBuild, "lblBuild");
+            lblBuild.Name = "lblBuild";
             // 
             // lnkUpdate
             // 
-            resources.ApplyResources(this.lnkUpdate, "lnkUpdate");
-            this.lnkUpdate.Name = "lnkUpdate";
-            this.lnkUpdate.TabStop = true;
-            this.lnkUpdate.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkUpdate_LinkClicked);
+            resources.ApplyResources(lnkUpdate, "lnkUpdate");
+            lnkUpdate.Name = "lnkUpdate";
+            lnkUpdate.TabStop = true;
+            lnkUpdate.LinkClicked += lnkUpdate_LinkClicked;
             // 
             // cLogo
             // 
-            resources.ApplyResources(this.cLogo, "cLogo");
-            this.cLogo.Interval = 100;
-            this.cLogo.Name = "cLogo";
+            resources.ApplyResources(cLogo, "cLogo");
+            cLogo.Interval = 100;
+            cLogo.Name = "cLogo";
             // 
             // rtbInfo
             // 
-            resources.ApplyResources(this.rtbInfo, "rtbInfo");
-            this.rtbInfo.BackColor = System.Drawing.SystemColors.Window;
-            this.rtbInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.rtbInfo.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.rtbInfo.Name = "rtbInfo";
-            this.rtbInfo.ReadOnly = true;
-            this.rtbInfo.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.rtb_LinkClicked);
+            resources.ApplyResources(rtbInfo, "rtbInfo");
+            rtbInfo.BackColor = System.Drawing.SystemColors.Window;
+            rtbInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            rtbInfo.ForeColor = System.Drawing.SystemColors.ControlText;
+            rtbInfo.Name = "rtbInfo";
+            rtbInfo.ReadOnly = true;
+            rtbInfo.LinkClicked += rtb_LinkClicked;
             // 
             // AboutForm
             // 
-            this.AcceptButton = this.btnClose;
+            AcceptButton = btnClose;
             resources.ApplyResources(this, "$this");
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-            this.BackColor = System.Drawing.SystemColors.Window;
-            this.CancelButton = this.btnClose;
-            this.Controls.Add(this.lnkUpdate);
-            this.Controls.Add(this.pbLogo);
-            this.Controls.Add(this.cLogo);
-            this.Controls.Add(this.lblProductName);
-            this.Controls.Add(this.lblBuild);
-            this.Controls.Add(this.btnClose);
-            this.Controls.Add(this.rtbInfo);
-            this.Name = "AboutForm";
-            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
-            this.Shown += new System.EventHandler(this.AboutForm_Shown);
-            ((System.ComponentModel.ISupportInitialize)(this.pbLogo)).EndInit();
-            this.ResumeLayout(false);
-            this.PerformLayout();
+            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            BackColor = System.Drawing.SystemColors.Window;
+            CancelButton = btnClose;
+            Controls.Add(lnkUpdate);
+            Controls.Add(pbLogo);
+            Controls.Add(cLogo);
+            Controls.Add(lblProductName);
+            Controls.Add(lblBuild);
+            Controls.Add(btnClose);
+            Controls.Add(rtbInfo);
+            MaximizeBox = false;
+            Name = "AboutForm";
+            ShowInTaskbar = false;
+            SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            Shown += AboutForm_Shown;
+            ((System.ComponentModel.ISupportInitialize)pbLogo).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
 
         }
 

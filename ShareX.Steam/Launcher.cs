@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2022 ShareX Team
+    Copyright (c) 2007-2026 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -23,10 +23,10 @@
 
 #endregion License Information (GPL v3)
 
-using Steamworks;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Management;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -34,7 +34,7 @@ namespace ShareX.Steam
 {
     public static class Launcher
     {
-        private static string ContentFolderPath = GetContentFolderPath();
+        private static string ContentFolderPath = Helpers.GetAbsolutePath("ShareX");
         private static string ContentExecutablePath = Path.Combine(ContentFolderPath, "ShareX.exe");
         private static string ContentSteamFilePath = Path.Combine(ContentFolderPath, "Steam");
         private static string UpdatingTempFilePath = Path.Combine(ContentFolderPath, "Updating");
@@ -55,11 +55,7 @@ namespace ShareX.Steam
 
             IsStartupRun = Helpers.IsCommandExist(args, "-silent");
 
-#if DEBUG
-            ShowInApp = true;
-#else
             ShowInApp = File.Exists(ContentSteamFilePath);
-#endif
 
             if (!IsShareXRunning())
             {
@@ -136,20 +132,6 @@ namespace ShareX.Steam
             }
         }
 
-        private static string GetContentFolderPath()
-        {
-#if DEBUG
-            string path = Helpers.GetAbsolutePath(@"..\..\..\ShareX\bin\Debug");
-
-            if (Directory.Exists(path))
-            {
-                return path;
-            }
-#endif
-
-            return Helpers.GetAbsolutePath("ShareX");
-        }
-
         private static bool IsShareXRunning()
         {
             // Check ShareX mutex.
@@ -222,26 +204,37 @@ namespace ShareX.Steam
         {
             try
             {
-                if (ShowInApp)
+                if (!ShowInApp)
                 {
-                    using (Process process = new Process())
-                    {
-                        ProcessStartInfo psi = new ProcessStartInfo()
-                        {
-                            FileName = ContentExecutablePath,
-                            Arguments = arguments,
-                            UseShellExecute = true
-                        };
+                    // Workarounds to not show "In-Game" on Steam.
 
-                        process.StartInfo = psi;
-                        process.Start();
-                    }
-                }
-                else
-                {
+                    // Workaround 1.
                     try
                     {
-                        // Workaround to don't show "In-app".
+                        using (ManagementClass managementClass = new ManagementClass("Win32_Process"))
+                        {
+                            ManagementClass processInfo = new ManagementClass("Win32_ProcessStartup");
+                            processInfo.Properties["CreateFlags"].Value = 0x00000008;
+
+                            ManagementBaseObject inParameters = managementClass.GetMethodParameters("Create");
+                            inParameters["CommandLine"] = $"\"{ContentExecutablePath}\" {arguments}";
+                            inParameters["ProcessStartupInformation"] = processInfo;
+
+                            ManagementBaseObject result = managementClass.InvokeMethod("Create", inParameters, null);
+                            // Returns a value of 0 (zero) if the process was successfully created, and any other number to indicate an error.
+                            if (result != null && (uint)result.Properties["ReturnValue"].Value == 0)
+                            {
+                                return;
+                            }
+                        }
+                    }
+                    catch
+                    {
+                    }
+
+                    // Workaround 2.
+                    try
+                    {
                         uint result = Helpers.WinExec($"\"{ContentExecutablePath}\" {arguments}", 5);
 
                         // If the function succeeds, the return value is greater than 31.
@@ -254,27 +247,51 @@ namespace ShareX.Steam
                     {
                     }
 
-                    // Workaround 2.
-                    string path = Path.Combine(Environment.SystemDirectory, "cmd.exe");
-
-                    if (!File.Exists(path))
+                    // Workaround 3.
+                    try
                     {
-                        path = "cmd.exe";
-                    }
+                        string path = Path.Combine(Environment.SystemDirectory, "cmd.exe");
 
-                    using (Process process = new Process())
-                    {
-                        ProcessStartInfo psi = new ProcessStartInfo()
+                        if (!File.Exists(path))
                         {
-                            FileName = path,
-                            Arguments = $"/C start \"\" \"{ContentExecutablePath}\" {arguments}",
-                            UseShellExecute = false,
-                            CreateNoWindow = true
-                        };
+                            path = "cmd.exe";
+                        }
 
-                        process.StartInfo = psi;
-                        process.Start();
+                        using (Process process = new Process())
+                        {
+                            ProcessStartInfo psi = new ProcessStartInfo()
+                            {
+                                FileName = path,
+                                Arguments = $"/C start \"\" \"{ContentExecutablePath}\" {arguments}",
+                                UseShellExecute = false,
+                                CreateNoWindow = true
+                            };
+
+                            process.StartInfo = psi;
+                            bool result = process.Start();
+
+                            if (result)
+                            {
+                                return;
+                            }
+                        }
                     }
+                    catch
+                    {
+                    }
+                }
+
+                using (Process process = new Process())
+                {
+                    ProcessStartInfo psi = new ProcessStartInfo()
+                    {
+                        FileName = ContentExecutablePath,
+                        Arguments = arguments,
+                        UseShellExecute = true
+                    };
+
+                    process.StartInfo = psi;
+                    process.Start();
                 }
             }
             catch (Exception e)

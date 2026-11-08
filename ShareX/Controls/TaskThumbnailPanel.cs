@@ -2,7 +2,7 @@
 
 /*
     ShareX - A program that allows you to take screenshots and share any file type
-    Copyright (c) 2007-2022 ShareX Team
+    Copyright (c) 2007-2026 ShareX Team
 
     This program is free software; you can redistribute it and/or
     modify it under the terms of the GNU General Public License
@@ -250,22 +250,13 @@ namespace ShareX
 
         public void UpdateTheme()
         {
-            if (ShareXResources.UseCustomTheme)
-            {
-                lblTitle.ForeColor = ShareXResources.Theme.TextColor;
-                lblTitle.TextShadowColor = ShareXResources.Theme.DarkBackgroundColor;
-                pThumbnail.PanelColor = ShareXResources.Theme.DarkBackgroundColor;
-                ttMain.BackColor = ShareXResources.Theme.BackgroundColor;
-                ttMain.ForeColor = ShareXResources.Theme.TextColor;
-            }
-            else
-            {
-                lblTitle.ForeColor = SystemColors.ControlText;
-                lblTitle.TextShadowColor = Color.Transparent;
-                pThumbnail.PanelColor = SystemColors.ControlLight;
-                ttMain.BackColor = SystemColors.Window;
-                ttMain.ForeColor = SystemColors.ControlText;
-            }
+            lblTitle.ForeColor = ShareXResources.Theme.TextColor;
+            lblTitle.TextShadowColor = ShareXResources.Theme.DarkBackgroundColor;
+            pThumbnail.PanelColor = ShareXResources.Theme.DarkBackgroundColor;
+            ttMain.BackColor = ShareXResources.Theme.BackgroundColor;
+            ttMain.ForeColor = ShareXResources.Theme.TextColor;
+            lblCombineHorizontal.BorderColor = ShareXResources.Theme.BorderColor;
+            lblCombineVertical.BorderColor = ShareXResources.Theme.BorderColor;
         }
 
         public void UpdateTitle()
@@ -316,6 +307,11 @@ namespace ShareX
                 lblTitle.Location = new Point(0, pThumbnail.Height + 2);
                 lblError.Location = new Point((ClientSize.Width - lblError.Width) / 2, pThumbnail.Height - lblError.Height - 1);
             }
+
+            lblCombineHorizontal.Location = new Point(pbThumbnail.Left, pbThumbnail.Top);
+            lblCombineHorizontal.Size = new Size(pbThumbnail.Width, pbThumbnail.Height / 2);
+            lblCombineVertical.Location = new Point(pbThumbnail.Left, pbThumbnail.Top + pbThumbnail.Height / 2 - 1);
+            lblCombineVertical.Size = new Size(pbThumbnail.Width, pbThumbnail.Height / 2 + 1);
         }
 
         public void UpdateThumbnail(Bitmap bmp = null)
@@ -374,7 +370,22 @@ namespace ShareX
 
                 if (!string.IsNullOrEmpty(filePath))
                 {
-                    using (Icon icon = NativeMethods.GetJumboFileIcon(filePath, false))
+                    if (FileHelpers.IsVideoFile(filePath))
+                    {
+                        Bitmap bmpResult = NativeMethods.GetFileThumbnail(filePath, ThumbnailSize);
+
+                        if (bmpResult != null)
+                        {
+                            if (bmpResult.Width > 64 && bmpResult.Height > 64)
+                            {
+                                ImageHelpers.DrawImageCentered(bmpResult, Resources.Play);
+                            }
+
+                            return bmpResult;
+                        }
+                    }
+
+                    using (Icon icon = NativeMethods.GetJumboFileIcon(filePath))
                     using (Bitmap bmpResult = icon.ToBitmap())
                     {
                         return ImageHelpers.ResizeImage(bmpResult, ThumbnailSize, false, true);
@@ -390,6 +401,12 @@ namespace ShareX
             if (Task.Info != null)
             {
                 Progress = (int)Task.Info.Progress.Percentage;
+
+                if (HelpersOptions.DevMode)
+                {
+                    pbProgress.Text = string.Format("{0} / {1}", Task.Info.Progress.Position.ToSizeString(Program.Settings.BinaryUnits),
+                        Task.Info.Progress.Length.ToSizeString(Program.Settings.BinaryUnits));
+                }
             }
         }
 
@@ -442,7 +459,7 @@ namespace ShareX
                                 {
                                     pbThumbnail.Enabled = true;
                                 }
-                            }
+                            } // TODO: Translate
                             else if (FileHelpers.IsTextFile(filePath) || FileHelpers.IsVideoFile(filePath) ||
                                 MessageBox.Show("Would you like to open this file?" + "\r\n\r\n" + filePath,
                                 Resources.ShareXConfirmation, MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
@@ -560,17 +577,75 @@ namespace ShareX
             {
                 if (Task.Info != null && !string.IsNullOrEmpty(Task.Info.FilePath) && File.Exists(Task.Info.FilePath))
                 {
+                    pThumbnail.AllowDrop = false;
                     Program.MainForm.AllowDrop = false;
-                    IDataObject dataObject = new DataObject(DataFormats.FileDrop, new string[] { Task.Info.FilePath });
-                    dragBoxFromMouseDown = Rectangle.Empty;
-                    pbThumbnail.DoDragDrop(dataObject, DragDropEffects.Copy | DragDropEffects.Move);
-                    Program.MainForm.AllowDrop = true;
+
+                    try
+                    {
+                        IDataObject dataObject = new DataObject(DataFormats.FileDrop, new string[] { Task.Info.FilePath });
+                        dragBoxFromMouseDown = Rectangle.Empty;
+                        pbThumbnail.DoDragDrop(dataObject, DragDropEffects.Copy | DragDropEffects.Move);
+                    }
+                    finally
+                    {
+                        pThumbnail.AllowDrop = true;
+                        Program.MainForm.AllowDrop = true;
+                    }
                 }
                 else
                 {
                     dragBoxFromMouseDown = Rectangle.Empty;
                 }
             }
+        }
+
+        private void pThumbnail_DragEnter(object sender, DragEventArgs e)
+        {
+            string filePath = Task.Info.FilePath;
+
+            if (FileHelpers.IsImageFile(filePath) && e.Data.GetDataPresent(DataFormats.FileDrop, false) &&
+                e.Data.GetData(DataFormats.FileDrop, false) is string[] files && files.Length > 0 && FileHelpers.IsImageFile(files[0]))
+            {
+                lblCombineHorizontal.Visible = true;
+                lblCombineVertical.Visible = true;
+
+                e.Effect = DragDropEffects.Copy;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void pThumbnail_DragLeave(object sender, EventArgs e)
+        {
+            lblCombineHorizontal.Visible = false;
+            lblCombineVertical.Visible = false;
+        }
+
+        private void pThumbnail_DragDrop(object sender, DragEventArgs e)
+        {
+            Orientation combineOrientation = Orientation.Horizontal;
+
+            Point vertical = lblCombineVertical.PointToScreen(lblCombineVertical.ClientRectangle.Location);
+
+            if (e.Y >= vertical.Y)
+            {
+                combineOrientation = Orientation.Vertical;
+            }
+
+            string filePath = Task.Info.FilePath;
+
+            if (FileHelpers.IsImageFile(filePath) && e.Data.GetDataPresent(DataFormats.FileDrop, false) &&
+                e.Data.GetData(DataFormats.FileDrop, false) is string[] files && files.Length > 0 && FileHelpers.IsImageFile(files[0]))
+            {
+                string filePathDrop = files[0];
+
+                TaskHelpers.CombineImages(new string[] { filePathDrop, filePath }, combineOrientation);
+            }
+
+            lblCombineHorizontal.Visible = false;
+            lblCombineVertical.Visible = false;
         }
 
         private void TtMain_Draw(object sender, DrawToolTipEventArgs e)

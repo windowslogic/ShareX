@@ -179,9 +179,6 @@
   <data name="tsmiTextCapture.Size" type="System.Drawing.Size, System.Drawing">
     <value>184, 22</value>
   </data>
-  <data name="tsmiTextCapture.Text" xml:space="preserve">
-    <value>تشخیص متن از عکس (OCR) ...</value>
-  </data>
   <data name="tsmiAutoCapture.Size" type="System.Drawing.Size, System.Drawing">
     <value>184, 22</value>
   </data>
@@ -259,9 +256,6 @@
   </data>
   <data name="tsmiImageEffects.Text" xml:space="preserve">
     <value>افکت های عکس ...</value>
-  </data>
-  <data name="tsmiHashCheck.Text" xml:space="preserve">
-    <value>چک کردن Hash</value>
   </data>
   <data name="tsmiQRCode.Text" xml:space="preserve">
     <value>کد QR ...</value>
@@ -347,9 +341,6 @@
   <data name="tsmiUploadDragDrop.Text" xml:space="preserve">
     <value>آپلود با کشیدن و رهاکردن ...</value>
   </data>
-  <data name="tsmiTweetMessage.Text" xml:space="preserve">
-    <value>پیام توئیت ...</value>
-  </data>
   <data name="tsmiTrayWorkflows.Text" xml:space="preserve">
     <value>گردش کار</value>
   </data>
@@ -386,9 +377,6 @@
   <data name="tsmiTrayUpload.Text" xml:space="preserve">
     <value>آپلود</value>
   </data>
-  <data name="tsmiTrayTweetMessage.Text" xml:space="preserve">
-    <value>پیام توئیت ...</value>
-  </data>
   <data name="tsmiTrayTools.Text" xml:space="preserve">
     <value>ابزار</value>
   </data>
@@ -397,9 +385,6 @@
   </data>
   <data name="tsmiTrayTextUploaders.Text" xml:space="preserve">
     <value>آپلود کننده های متن</value>
-  </data>
-  <data name="tsmiTrayTextCapture.Text" xml:space="preserve">
-    <value>تشخیص متن از عکس (OCR) ...</value>
   </data>
   <data name="tsmiTrayTaskSettings.Text" xml:space="preserve">
     <value>تنظیمات وظیفه ...</value>
@@ -500,9 +485,6 @@
   <data name="tsmiTrayHistory.Text" xml:space="preserve">
     <value>تاریخچه ...</value>
   </data>
-  <data name="tsmiTrayHashCheck.Text" xml:space="preserve">
-    <value>چک کردن Hash ...</value>
-  </data>
   <data name="tsmiTrayFullscreen.Text" xml:space="preserve">
     <value>تمام صفحه</value>
   </data>
@@ -511,9 +493,6 @@
   </data>
   <data name="tsmiTrayExit.Text" xml:space="preserve">
     <value>خروج</value>
-  </data>
-  <data name="tsmiTrayDNSChanger.Text" xml:space="preserve">
-    <value>تغییردادن DNS ...</value>
   </data>
   <data name="tsmiTrayDestinationSettings.Text" xml:space="preserve">
     <value>تنظیمات مقصد ...</value>
@@ -572,9 +551,6 @@
   <data name="tsmiCopy.Text" xml:space="preserve">
     <value>کپی</value>
   </data>
-  <data name="tsmiCustomUploaderSettings.Text" xml:space="preserve">
-    <value>تنظیمات آپلود سفارشی ...</value>
-  </data>
   <data name="tsmiShowDebugLog.Text" xml:space="preserve">
     <value>خطایابی ...</value>
   </data>
@@ -590,14 +566,8 @@
   <data name="tsmiOpenDeletionURL.Text" xml:space="preserve">
     <value>آدرس حذف</value>
   </data>
-  <data name="tsmiDestinationSettings.Text" xml:space="preserve">
-    <value>تنظیمات مقصد ...</value>
-  </data>
   <data name="tsmiIndexFolder.Text" xml:space="preserve">
     <value>لیست کننده کل دایرکتوری ...</value>
-  </data>
-  <data name="tsmiDNSChanger.Text" xml:space="preserve">
-    <value>تغییردادن DNS ...</value>
   </data>
   <data name="tsmiDownloadSelectedURL.Text" xml:space="preserve">
     <value>دانلود (بارگذاری)</value>
