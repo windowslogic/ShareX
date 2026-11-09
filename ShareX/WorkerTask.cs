@@ -545,7 +545,10 @@ namespace ShareX
                     return false;
                 }
 
-                DoFileJobs();
+                if (!DoFileJobs())
+                {
+                    return false;
+                }
             }
             else if (Info.Job == TaskJob.TextUpload && !string.IsNullOrEmpty(Text))
             {
@@ -553,7 +556,10 @@ namespace ShareX
             }
             else if (Info.Job == TaskJob.FileUpload && Info.TaskSettings.AdvancedSettings.UseAfterCaptureTasksDuringFileUpload)
             {
-                DoFileJobs();
+                if (!DoFileJobs())
+                {
+                    return false;
+                }
             }
 
             if (Info.TaskSettings.AfterCaptureJob.HasFlag(AfterCaptureTasks.DoOCR))
@@ -717,7 +723,7 @@ namespace ShareX
             return true;
         }
 
-        private void DoFileJobs()
+        private bool DoFileJobs()
         {
             if (!string.IsNullOrEmpty(Info.FilePath) && File.Exists(Info.FilePath))
             {
@@ -733,6 +739,14 @@ namespace ShareX
                         foreach (ExternalProgram fileAction in actions)
                         {
                             string modifiedPath = fileAction.Run(Info.FilePath);
+
+                            string resultPath = string.IsNullOrEmpty(modifiedPath) ? Info.FilePath : modifiedPath;
+
+                            if (!File.Exists(resultPath))
+                            {
+                                DebugHelper.WriteLine($"Action result file does not exist: \"{resultPath}\"");
+                                return false;
+                            }
 
                             if (!string.IsNullOrEmpty(modifiedPath))
                             {
@@ -753,7 +767,10 @@ namespace ShareX
                             string extension = FileHelpers.GetFileNameExtension(Info.FilePath);
                             Info.FileName = FileHelpers.ChangeFileNameExtension(fileName, extension);
 
-                            LoadFileStream();
+                            if (!LoadFileStream())
+                            {
+                                return false;
+                            }
                         }
                     }
                 }
@@ -785,6 +802,7 @@ namespace ShareX
                     QRCodeForm.OpenFormScanFromImageFile(Info.FilePath).ShowDialog();
                 }
             }
+            return true;
         }
 
         private void DoTextJobs()
