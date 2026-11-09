@@ -52,6 +52,9 @@ namespace ShareX.HelpersLib
 
                 string fullName = Directory.CreateDirectory(Path.GetFullPath(destination)).FullName;
 
+                // Include the separator so a sibling with the same name prefix is not treated as a child.
+                string fullNameWithSeparator = Path.EndsInDirectorySeparator(fullName) ? fullName : fullName + Path.DirectorySeparatorChar;
+
                 foreach (ZipArchiveEntry entry in archive.Entries)
                 {
                     if (filter != null && !filter(entry))
@@ -70,9 +73,14 @@ namespace ShareX.HelpersLib
                         entryName = entry.Name;
                     }
 
+                    if (Path.IsPathRooted(entryName))
+                    {
+                        continue;
+                    }
+
                     string fullPath = Path.GetFullPath(Path.Combine(fullName, entryName));
 
-                    if (fullPath.StartsWith(fullName, StringComparison.OrdinalIgnoreCase))
+                    if (fullPath.StartsWith(fullNameWithSeparator, StringComparison.Ordinal))
                     {
                         if (Path.GetFileName(fullPath).Length == 0)
                         {
