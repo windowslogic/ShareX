@@ -42,6 +42,10 @@ namespace ShareX.HelpersLib
     {
         #region user32.dll
 
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool AllowSetForegroundWindow(uint dwProcessId);
+
         [DllImport("user32.dll")]
         public static extern bool AnimateWindow(IntPtr hwnd, int time, AnimateWindowFlags flags);
 
@@ -308,6 +312,10 @@ namespace ShareX.HelpersLib
         [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
         public static extern bool CreateProcess(string lpApplicationName, string lpCommandLine, ref SECURITY_ATTRIBUTES lpProcessAttributes, ref SECURITY_ATTRIBUTES lpThreadAttributes,
             bool bInheritHandles, uint dwCreationFlags, IntPtr lpEnvironment, string lpCurrentDirectory, [In] ref STARTUPINFO lpStartupInfo, out PROCESS_INFORMATION lpProcessInformation);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool GetNamedPipeServerProcessId(SafeHandle pipe, out uint serverProcessId);
 
         [DllImport("kernel32.dll")]
         public static extern int ResumeThread(IntPtr hThread);
