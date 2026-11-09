@@ -92,7 +92,7 @@ Inno Setup Dependency Installer: https://github.com/DomGries/InnoDependencyInsta
 Blob Emoji: http://blobs.gg
 ", FontStyle.Regular, 8);
 
-            rtbInfo.AppendText("Copyright © 2007-2019 ShareX Team, Copyright © " + DateTime.Now.Year.ToString() + " WindowsLogic Productions", FontStyle.Regular, 10);
+            rtbInfo.AppendText("Copyright © 2007-2026 ShareX Team, Copyright © " + DateTime.Now.Year.ToString() + " WindowsLogic Productions", FontStyle.Regular, 10);
 
             easterEgg = new EasterEggAboutAnimation(cLogo, this);
         }
